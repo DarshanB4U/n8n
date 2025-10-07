@@ -14,52 +14,55 @@ datasource db {
 }
 
 model User {
-  id         Int           @id @default(autoincrement())
-  password   String
+  id         String        @id @default(uuid())
   name       String
   email      String        @unique
   createdAt  DateTime      @default(now())
-  workflows  workflow[]
+  workflows  Workflow[]
   credential Credentials[]
 }
 
-model workflow {
-  id          Int      @id @default(autoincrement())
+model Workflow {
+  id          String   @id @default(uuid())
   title       String
+  isActive    Boolean  @default(false)
   enabled     Boolean  @default(false)
   description String?
-  nodes       Json
+  nodes       Json[]
+  edges       Json[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  webhook Webhook[]
 
   @@index([userId])
 }
 
 enum CredentialTypes {
   TELEGRAM
-  RESEND
+  EMAIL
 }
 
 model Webhook {
-  id     Int    @id @default(autoincrement())
-  title  String
-  method String
-  path   String
-  header String
-  secret String
+  id         String   @id @default(uuid())
+  title      String
+  method     String
+  path       String
+  header     String
+  secret     String
+  workflowID String
+  workflow   Workflow @relation(fields: [workflowID], references: [id])
 }
 
 model Credentials {
-  id        Int             @id @default(autoincrement())
-  title     String
-  platform  CredentialTypes
-  data      Json
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  id             String          @id @default(uuid())
+  title          String
+  platform       CredentialTypes
+  CredentailData Json
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
 }

@@ -5,7 +5,16 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+    "@repo/types": ["../packages/types/src/index"],
+      "@repo/types/zod": ["../packages/types/src/zodschema"],
+       "@repo/types/*": ["../packages/types/src/*"]
+    }
   },
   "include": [
     "**/*.ts",

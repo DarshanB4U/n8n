@@ -1,48 +1,34 @@
 import { prisma } from "@repo/db";
-import { INode } from "@repo/shared/index";
-import express from "express";
+
+
+// import { INode, NodeServices } from "@repo/shared/types";
+import express, { Router } from "express";
 import cors from "cors";
+import {
+  CredentialsBody,
+  signupBody,
+  workflowBody,
+} from "@repo/types/zodSchema";
+import { authMiddleware, myPayload } from "./middlware/authmiddlware";
+import { Backend_URL, emailCred, JWT_SECRET } from "./config";
+import cookieParser from "cookie-parser";
+import { authRouter } from "./routes/authRoute";
+import { credentialRouter } from "./routes/credentialRoute";
+import { workflowRouter } from "./routes/workflowRoute";
 
 const PORT = 8000;
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
 app.use(cors());
 
-app.use(express.json());
+app.use("/api/v0/auth", authRouter);
+app.use("/api/v0/creadential", credentialRouter);
+app.use("/api/v0/workflow", authMiddleware, workflowRouter);
 
-app.post("/api/v0/signup", async (req, res) => {
-  const userName = "darshjhhan";
-  const userEmail = "darshjhjhhan@gmail.com ";
-  const userPassword = "abcd1234";
-  console.log("lol");
-  const user = await prisma.user.create({
-    data: {
-      name: userName,
-      email: userEmail,
-      password: userPassword,
-    },
-  });
-  console.log(user);
-  res.send("user created ")
-});
 
-app.post("/api/v0/signin", async (req, res) => {
-  console.log("signin hit");
-
-  res.send("msg form signin");
-});
-
-app.post("/api/v0/workflow", async (req, res) => {});
-
-app.get("/api/v0/workflow", async (req, res) => {});
-
-app.get("/api/v0/workflow/:id", async (req, res) => {});
-
-app.put("/api/v0/workflow/:id", async (req, res) => {});
-
-app.post("/api/v0/credential", async (req, res) => {});
-
-app.delete("/api/v0/credential", async (req, res) => {});
 
 app.listen(PORT, () => {
   console.log("app is listning on port :", PORT);
