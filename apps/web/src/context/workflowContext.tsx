@@ -11,7 +11,9 @@ interface WorkflowContext extends Workflow {
   removeEdge: (edge: string) => void;
 }
 
-const worfklwoContext = createContext<WorkflowContext | undefined>(undefined);
+export const workflowContext = createContext<WorkflowContext | undefined>(
+  undefined
+);
 
 export const WorkflowProivider = ({
   children,
@@ -31,10 +33,10 @@ export const WorkflowProivider = ({
     setEdges((prev) => prev.filter((e) => e.id !== id));
 
   return (
-    <worfklwoContext.Provider
+    <workflowContext.Provider
       value={{ nodes, edges, addNode, addEdge, deleteNode, removeEdge }}
     >
       {children}
-    </worfklwoContext.Provider>
+    </workflowContext.Provider>
   );
 };

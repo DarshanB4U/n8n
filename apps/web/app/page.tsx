@@ -26,7 +26,7 @@ const BACKEND_URL = "http://localhost:8000";
 const initialNodes = [
   {
     id: "n3",
-    type: "manualTrigger",
+    type: "initialnode",
     position: { x: -136, y: 200 },
     data: { value: 123 },
   },
@@ -133,25 +133,25 @@ export default function Home() {
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               fitView
-              onNodeClick={(event, node) => {
-                if (node.type === "initialnode") {
-                  console.log("Clicked Telegram node:", node);
-                  // your custom logic here
-                  const newId = `node-${Date.now()}`;
-                  const tg = {
-                    id: newId,
-                    type: "tgnode",
-                    position: { x: 0, y: 0 },
-                    data: { value: 123 },
-                  };
-                  setNodes([tg]);
-                }
-                // console.log("clicked");
+              // onNodeClick={(event, node) => {
+              //   // if (node.type === "initialnode") {
+              //   //   // console.log("Clicked Telegram node:", node);
+              //   //   // // your custom logic here
+              //   //   // const newId = `node-${Date.now()}`;
+              //   //   // const tg = {
+              //   //   //   id: newId,
+              //   //   //   type: "tgnode",
+              //   //   //   position: { x: 0, y: 0 },
+              //   //   //   data: { value: 123 },
+              //   //   // };
+              //   //   // setNodes([tg]);
+              //   // }
+              //   // // console.log("clicked");
 
-                // else{
-                //   setNodes((prev)=>[...prev,emailnode])
-                // }
-              }}
+              //   // else{
+              //   //   setNodes((prev)=>[...prev,emailnode])
+              //   // }
+              // }}
             >
               <Background></Background>
             </ReactFlow>
