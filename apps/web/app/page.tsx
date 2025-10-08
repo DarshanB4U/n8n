@@ -1,5 +1,5 @@
 "use client";
-import { InitialNode } from "./nodes/intialnode";
+// import { InitialNode } from "./nodes/intialnode";
 import { TelegramNode } from "./nodes/telegramNode";
 import { Emailnode } from "./nodes/emailNode";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -20,6 +20,8 @@ import { useState, useCallback, useEffect } from "react";
 import SideDrawer from "./pageComponents/SideDrawer";
 import { nanoid } from "nanoid";
 import axios from "axios";
+import { TriggerSheetWithForm } from "./nodes/TriggerSheetWithForm";
+
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -87,7 +89,7 @@ export default function Home() {
   );
 
   const nodeTypes = {
-    initialnode: InitialNode,
+    initialnode: TriggerSheetWithForm ,
     Telegramnode: TelegramNode,
     Emailnode: Emailnode,
     manualTrigger: manualTrigger,
