@@ -14,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Pencil, Trash2, Play } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { log } from "console";
 
 type Workflow = {
   id: string;

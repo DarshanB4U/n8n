@@ -2,8 +2,6 @@
 // import { InitialNode } from "./nodes/intialnode";
 import { TelegramNode } from "./nodes/telegramNode";
 import { Emailnode } from "./nodes/emailNode";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./pageComponents/sidebar";
 import { manualTrigger } from "./nodes/manuClickNode";
 import { Button } from "@/components/ui/button";
 
@@ -17,17 +15,15 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useState, useCallback, useEffect } from "react";
-import SideDrawer from "./pageComponents/SideDrawer";
 import { nanoid } from "nanoid";
 import axios from "axios";
-import { TriggerSheetWithForm } from "./nodes/TriggerSheetWithForm";
-
+import { TriggerSheetWithForm } from "@/components/TriggerSheetWithForm";
 
 const BACKEND_URL = "http://localhost:8000";
 
 const initialNodes = [
   {
-    id: "n3",
+    id: "0-initial",
     type: "initialnode",
     position: { x: -136, y: 200 },
     data: { value: 123 },
@@ -71,7 +67,6 @@ export default function Home() {
     });
   }, []);
 
-  const handelCreateOnclick = () => {};
   const onNodesChange = useCallback(
     (changes: any) =>
       setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -89,7 +84,7 @@ export default function Home() {
   );
 
   const nodeTypes = {
-    initialnode: TriggerSheetWithForm ,
+    initialnode: TriggerSheetWithForm,
     Telegramnode: TelegramNode,
     Emailnode: Emailnode,
     manualTrigger: manualTrigger,
@@ -107,59 +102,51 @@ export default function Home() {
 
   return (
     <div>
-      <SidebarProvider>
-        <AppSidebar />
-        <main>
-          <div className=" grid grid-cols-12">
-            <SidebarTrigger className="h-12 w-12 col-span-1" />
-
-            <div className="flex  justify-center col-span-">
-              <SideDrawer addNode={addNode} />
-            </div>
-            <div className="col-span-4 flex  justify-center ">
-              <Button
-                onClick={handleSaveClick}
-                variant={"secondary"}
-                className="flex hover:bg-blue-200  active:bg-green-700 font-bold items-center"
-              >
-                Save
-              </Button>
-            </div>
-          </div>
-          <div className="h-screen w-screen  ">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              fitView
-              // onNodeClick={(event, node) => {
-              //   // if (node.type === "initialnode") {
-              //   //   // console.log("Clicked Telegram node:", node);
-              //   //   // // your custom logic here
-              //   //   // const newId = `node-${Date.now()}`;
-              //   //   // const tg = {
-              //   //   //   id: newId,
-              //   //   //   type: "tgnode",
-              //   //   //   position: { x: 0, y: 0 },
-              //   //   //   data: { value: 123 },
-              //   //   // };
-              //   //   // setNodes([tg]);
-              //   // }
-              //   // // console.log("clicked");
-
-              //   // else{
-              //   //   setNodes((prev)=>[...prev,emailnode])
-              //   // }
-              // }}
+      <main>
+        <div className=" grid grid-cols-12">
+          <div className="col-span-4 flex  justify-center ">
+            <Button
+              onClick={handleSaveClick}
+              variant={"secondary"}
+              className="flex hover:bg-blue-200  active:bg-green-700 font-bold items-center"
             >
-              <Background></Background>
-            </ReactFlow>
+              Save
+            </Button>
           </div>
-        </main>
-      </SidebarProvider>
+        </div>
+        <div className="h-screen w-screen  ">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+            // onNodeClick={(event, node) => {
+            //   // if (node.type === "initialnode") {
+            //   //   // console.log("Clicked Telegram node:", node);
+            //   //   // // your custom logic here
+            //   //   // const newId = `node-${Date.now()}`;
+            //   //   // const tg = {
+            //   //   //   id: newId,
+            //   //   //   type: "tgnode",
+            //   //   //   position: { x: 0, y: 0 },
+            //   //   //   data: { value: 123 },
+            //   //   // };
+            //   //   // setNodes([tg]);
+            //   // }
+            //   // // console.log("clicked");
+
+            //   // else{
+            //   //   setNodes((prev)=>[...prev,emailnode])
+            //   // }
+            // }}
+          >
+            <Background></Background>
+          </ReactFlow>
+        </div>
+      </main>
     </div>
   );
 }

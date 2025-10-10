@@ -6,14 +6,13 @@ export default function WorkflowLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
-  
   return (
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <main>
-          <SidebarTrigger className="p-5 bg-emerald-950   m-5" />
+        <main >
+          <SidebarTrigger className="bg-teal-900" />
+
           <div>{children}</div>
         </main>
       </SidebarProvider>

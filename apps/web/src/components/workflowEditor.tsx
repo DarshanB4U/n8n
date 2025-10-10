@@ -1,67 +1,159 @@
-import React, { useContext, useCallback } from "react";
+"use client";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import {
   ReactFlow,
   applyNodeChanges,
-  Connection,
-  EdgeTypes,
-  Edge,
-  Node
-
+  applyEdgeChanges,
+  addEdge,
+  Background,
+  Node,
+  NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useState, useCallback, useEffect, useContext } from "react";
+import { nanoid } from "nanoid";
+import axios from "axios";
+import { TriggerSheetWithForm } from "@/components/TriggerSheetWithForm";
+import CostomeTnode from "./CostomeTnode";
+import { useSidebar } from "./ui/sidebar";
 import { workflowContext } from "@/context/workflowContext";
-const initialNodes = [
-  { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
-  { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
-];
-const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
+import { INode } from "@repo/types/zodSchema";
+import ActionSheetWithForm from "./ActionSheetWithForm";
+import { WebhookNode } from "./nodes/WebhookNode";
+import { ManualTrigger } from "@/components/nodes/ManualClickNode";
 
-type OnConnect = (connection: Connection) => void;
+const BACKEND_URL = "http://localhost:8000";
 
-const WorkflowEditor = () => {
-  const context = useContext(workflowContext);
+// const initialNodes = [
+//   {
+//     id: "-1",
+//     type: "addnode",
+//     position: { x: -500, y: 200 },
+//     data: { value: 123 },
+//   },
+// ];
+interface myNode extends Node {
+  type: string;
+}
 
-  if (!context) {
-    throw Error("cann not use eorkflow context outside workflow context ");
+const initialEdges = [{ id: "n1-n2", source: "n3", target: "n2" }];
+
+const AddNode = () => (
+  <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
+    <Plus size={12} />
+  </div>
+);
+
+export default function workflowEditor() {
+  const { open } = useSidebar();
+  // const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
+  // const [edges, setEdges] = useState(initialEdges);
+  const WorkflowContext = useContext(workflowContext);
+  if (!WorkflowContext) {
+    console.log("error in WorkflowContext");
     return;
   }
+  const { nodes, edges, setNodes, setEdges, onNodesChange } = WorkflowContext;
+  // const [workflowExist, setWorkflowExist] = useState(false);
+  const [dialogOpen, setDilogOpen] = useState(false);
 
-  // const { nodes, addNode, deleteNode, removeEdge, edges } = context;
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  // const addNode = useCallback((type: string) => {
+  //   const newNodeID = nanoid(5);
+  //   const newNode: myNode = {
+  //     id: newNodeID,
+  //     position: { x: Math.random() * 50, y: Math.random() * 200 },
+  //     type: type + "node",
+  //     data: {
+  //       parameters: {
+  //         msg: {
+  //           dfsdfdf: "fdasfdsfdsf",
+  //           sdfsdfdsfd: {
+  //             fdsfdfdf: "dsfsdfdsf",
+  //           },
+  //         },
+  //       },
+  //       Credentials: {
+  //         telegram: "uuid3434dsdf",
+  //       },
+  //     },
+  //   };
+  //   setNodes((prev) => {
+  //     console.log(initialNodes);
 
-  const onNodesChange = useCallback(
-    (changes) =>
-      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    []
-  );
+  //     return [...prev, newNode];
+  //   });
+  // }, []);
 
+  // const onNodesChange = useCallback(
+  //   (changes) =>
+  //     addNodes((nodesSnapshot: Node[]) =>
+  //       applyNodeChanges(changes, nodesSnapshot)
+  //     ),
+
+  //   []
+  // );
   const onEdgesChange = useCallback(
-    (changes) =>
+    (changes: any) =>
       setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
     []
   );
-  const onConnect: OnConnect = useCallback(
-    (params) =>
-      setEdges((edgesSnapshot): EdgeTypes => addEdge(params, edgesSnapshot)),
+  const onConnect = useCallback(
+    (params: any) =>
+      setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     []
   );
+  // onNodesChange()  use this for save on change
+
+  const nodeTypes = {
+    initial_node: TriggerSheetWithForm,
+    Trigger_Webhook: WebhookNode,
+    Trigger_Manual: ManualTrigger,
+    // Telegramnode: TelegramNode,
+    // Emailnode: Emailnode,
+    // manualTrigger: manualTrigger,
+  };
+
+  const handleSaveClick = () => {
+    axios.post(BACKEND_URL + "/api/v0/workflow", {
+      title: "myworkflow",
+      nodes,
+      edges,
+    });
+  };
+
+  useEffect(() => console.log(nodes, edges), [nodes]);
 
   return (
-    <div>
-      <div>workflowEditor </div>
-      <div style={{ width: "100vw", height: "100vh" }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          // onNodesChange={onNodesChange}
-          // onEdgesChange={onEdgesChange}
-          // onConnect={onConnect}
-          fitView
-        />
-      </div>
+    <div
+      className={`  overflow-hidden text-foreground  flex items-center flex-col  ${open ? "w-[calc(100vw-272px)]" : "w-screen"}`}
+    >
+      <main>
+        <div className=" grid grid-cols-12 ">
+          <div className="col-span-4 flex  justify-center ">
+            <Button
+              onClick={handleSaveClick}
+              variant={"secondary"}
+              className="flex hover:bg-blue-200  active:bg-green-700 font-bold items-center"
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+        <div className="h-screen w-screen  ">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+          >
+            <Background></Background>
+          </ReactFlow>
+        </div>
+      </main>
     </div>
   );
-};
-
-export default WorkflowEditor;
+}

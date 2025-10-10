@@ -261,6 +261,7 @@ function SidebarTrigger({
   const { toggleSidebar } = useSidebar();
 
   return (
+  
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
@@ -276,6 +277,7 @@ function SidebarTrigger({
       <PanelLeftIcon />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
+   
   );
 }
 

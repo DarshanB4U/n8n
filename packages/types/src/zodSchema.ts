@@ -5,6 +5,8 @@ export const TriggerNodetype = {
   emailAction: "Action_Email",
   webhookTrigger: "Trigger_Webhook",
   telegramAction: "Action_Telegram",
+  initialNode: "initial_node",
+  addNode: "addnode",
 } as const;
 
 export const nodeType = z.enum([
@@ -12,6 +14,8 @@ export const nodeType = z.enum([
   TriggerNodetype.webhookTrigger,
   TriggerNodetype.emailAction,
   TriggerNodetype.telegramAction,
+  TriggerNodetype.initialNode,
+  TriggerNodetype.addNode,
 ]);
 export const positionSchema = z.object({
   x: z.number(),

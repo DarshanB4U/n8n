@@ -1,6 +1,6 @@
-// TriggerSheetWithForm.tsx
+// TriggerSheetWithForm.tsxf
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Sheet,
   SheetTrigger,
@@ -11,12 +11,22 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { MousePointerClick, Webhook } from "lucide-react";
+import { workflowContext } from "@/context/workflowContext";
 
-type TriggerType = "manual" | "webhook";
+import { nanoid } from "nanoid";
+import { TriggerNodetype } from "@repo/types/zodSchema";
+
+type TriggerType = "Trigger_Manual" | "Trigger_Webhook"  ;
 
 export function TriggerSheetWithForm() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<TriggerType | null>(null);
+  const context = useContext(workflowContext)
+  if(!context){
+    console.log("WorkflowContext error")
+    return
+  }
+  const {setNodes}= context
 
   // Reset when closing
   const handleOpenChange = (isOpen: boolean) => {
@@ -25,6 +35,25 @@ export function TriggerSheetWithForm() {
       setSelected(null);
     }
   };
+
+  const  AddTriggertNode=(TriggerType: TriggerType) => {
+    const id = nanoid(5)
+    setNodes(
+      [
+         {
+              id: id,
+              type: TriggerType,
+              position: { x: -200, y: 200 },
+              data: { parameters: {}, Credentials: {}, outPut: {} },
+              measured: {},
+              selected: false,
+              dragging: false,
+             
+            },
+      ]
+    )
+
+  }
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -56,7 +85,7 @@ export function TriggerSheetWithForm() {
             <div className="space-y-3">
               <button
                 className="w-full flex items-center gap-3 p-3 border rounded hover:bg-blue-50"
-                onClick={() => setSelected("manual")}
+                onClick={() => setSelected(TriggerNodetype.manualTrigger)}
               >
                 <MousePointerClick className="w-5 h-5 text-blue-600" />
                 <span>Manual Trigger</span>
@@ -64,7 +93,7 @@ export function TriggerSheetWithForm() {
 
               <button
                 className="w-full flex items-center gap-3 p-3 border rounded hover:bg-green-50"
-                onClick={() => setSelected("webhook")}
+                onClick={() => setSelected(TriggerNodetype.webhookTrigger)}
               >
                 <Webhook className="w-5 h-5 text-green-600" />
                 <span>Webhook Trigger</span>
@@ -72,7 +101,7 @@ export function TriggerSheetWithForm() {
             </div>
           )}
 
-          {selected === "manual" && (
+          {selected === TriggerNodetype.manualTrigger && (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">Label</label>
@@ -99,6 +128,7 @@ export function TriggerSheetWithForm() {
                   onClick={() => {
                     // TODO: do something with the form data
                     console.log("manual trigger config submitted");
+                    AddTriggertNode(TriggerNodetype.manualTrigger);
                     setOpen(false);
                   }}
                 >
@@ -108,7 +138,7 @@ export function TriggerSheetWithForm() {
             </div>
           )}
 
-          {selected === "webhook" && (
+          {selected === TriggerNodetype.webhookTrigger && (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">
@@ -135,6 +165,7 @@ export function TriggerSheetWithForm() {
                 <Button
                   onClick={() => {
                     console.log("webhook config submitted");
+                    AddTriggertNode(TriggerNodetype.webhookTrigger);
                     setOpen(false);
                   }}
                 >
