@@ -1,19 +1,13 @@
-import { Handle,Position } from "@xyflow/react";
-import { useCallback } from "react";
+import { Handle, Position } from "@xyflow/react";
 
-export function Emailnode(props: any) {
-  const onChange = useCallback((evt: any) => {
-    console.log(evt.target.value);
-  }, []);
-
+export function Emailnode() {
   return (
     <div className="email-node">
-      
-            <Handle type="target" position={Position.Left} />
-            <Handle type="source" position={Position.Right} />
+      <Handle type="target" position={Position.Left} />
+      <Handle type="source" position={Position.Right} />
       <div
-        className="flex flex-col items-center justify-center border-2  border-gray-500 
-                   rounded-lg w-20 h-20 text-gray-500 hover:border-blue-400 hover:text-blue-400 transition"
+        className="flex flex-col items-center justify-center border-2  hover:border-neutral-500 
+                   rounded-lg w-20 h-20  hover:text-neutral-400 bg-neutral-800  border-orange-800 text-orange-400 transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -35,5 +29,3 @@ export function Emailnode(props: any) {
     </div>
   );
 }
-
-

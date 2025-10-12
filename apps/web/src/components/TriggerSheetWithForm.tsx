@@ -16,17 +16,17 @@ import { workflowContext } from "@/context/workflowContext";
 import { nanoid } from "nanoid";
 import { TriggerNodetype } from "@repo/types/zodSchema";
 
-type TriggerType = "Trigger_Manual" | "Trigger_Webhook"  ;
+type TriggerType = "Trigger_Manual" | "Trigger_Webhook";
 
 export function TriggerSheetWithForm() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<TriggerType | null>(null);
-  const context = useContext(workflowContext)
-  if(!context){
-    console.log("WorkflowContext error")
-    return
+  const context = useContext(workflowContext);
+  if (!context) {
+    console.log("WorkflowContext error");
+    return;
   }
-  const {setNodes}= context
+  const { setNodes } = context;
 
   // Reset when closing
   const handleOpenChange = (isOpen: boolean) => {
@@ -36,24 +36,20 @@ export function TriggerSheetWithForm() {
     }
   };
 
-  const  AddTriggertNode=(TriggerType: TriggerType) => {
-    const id = nanoid(5)
-    setNodes(
-      [
-         {
-              id: id,
-              type: TriggerType,
-              position: { x: -200, y: 200 },
-              data: { parameters: {}, Credentials: {}, outPut: {} },
-              measured: {},
-              selected: false,
-              dragging: false,
-             
-            },
-      ]
-    )
-
-  }
+  const AddTriggertNode = (TriggerType: TriggerType) => {
+    const id = nanoid(5);
+    setNodes([
+      {
+        id: id,
+        type: TriggerType,
+        position: { x: -200, y: 200 },
+        data: { parameters: {}, Credentials: {}, outPut: {} },
+        measured: {},
+        selected: false,
+        dragging: false,
+      },
+    ]);
+  };
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -61,13 +57,13 @@ export function TriggerSheetWithForm() {
         <div>
           <div className="nodrag">
             <button
-              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-500 
-                   rounded-lg w-20 h-20 text-gray-300 hover:border-blue-400 hover:text-blue-400 transition"
+              className="flex flex-col items-center justify-center border-2 border-dotted border-gray-500 
+                   rounded-lg w-20 h-20 text-teal-300 hover:border-blue-400 transition"
             >
               <span className="text-3xl">+</span>
             </button>
-            <p className="text-gray-300 mt-2 text-sm text-center">
-              Add Trigger
+            <p className="text-gray-300 font-medium mt-2 text-sm text-center">
+              Trigger
             </p>
           </div>
         </div>
@@ -128,7 +124,9 @@ export function TriggerSheetWithForm() {
                   onClick={() => {
                     // TODO: do something with the form data
                     console.log("manual trigger config submitted");
-                    AddTriggertNode(TriggerNodetype.manualTrigger);
+                    const payload = AddTriggertNode(
+                      TriggerNodetype.manualTrigger
+                    );
                     setOpen(false);
                   }}
                 >
@@ -155,6 +153,8 @@ export function TriggerSheetWithForm() {
                 <select className="mt-1 block w-full border rounded px-2 py-1">
                   <option>GET</option>
                   <option>POST</option>
+                  <option>DELETE</option>
+                  <option>UPDATE</option>
                 </select>
               </div>
 

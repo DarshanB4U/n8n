@@ -1,6 +1,12 @@
 "use client";
-import React, { createContext, useState, useContext } from "react";
-import { IEdge, INode, TriggerNodetype, Workflow } from "@repo/types/zodSchema";
+import React, { createContext, useState, useContext, SetStateAction } from "react";
+import {
+  ActionNodetype,
+  IEdge,
+  INode,
+  TriggerNodetype,
+  Workflow,
+} from "@repo/types/zodSchema";
 import { OnNodesChange, useNodesState } from "@xyflow/react";
 
 interface WorkflowContext extends Workflow {
@@ -10,6 +16,8 @@ interface WorkflowContext extends Workflow {
   // addEdge: (edge: IEdge) => void;
   // deleteNode: (id: string) => void;
   // removeEdge: (edge: string) => void;
+  actionSheetOpen: boolean;
+  SetActionSheetOpen:React.Dispatch<SetStateAction<boolean>>
   setNodes: React.Dispatch<React.SetStateAction<INode[]>>;
   setEdges: React.Dispatch<React.SetStateAction<IEdge[]>>;
   onNodesChange: OnNodesChange<INode>;
@@ -35,6 +43,7 @@ export const WorkflowProivider = ({
   //     dragging: false,
   //   },
   // ]);
+  const [actionSheetOpen, SetActionSheetOpen] = useState(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<INode>([
     {
@@ -45,9 +54,7 @@ export const WorkflowProivider = ({
       measured: {},
       selected: false,
       dragging: false,
-     
     },
-    
   ]);
   const [edges, setEdges] = useState<IEdge[]>([]);
 
@@ -68,7 +75,10 @@ export const WorkflowProivider = ({
         edges,
         setNodes,
         setEdges,
-        onNodesChange
+        onNodesChange,
+        actionSheetOpen,
+        SetActionSheetOpen
+
       }}
     >
       {children}

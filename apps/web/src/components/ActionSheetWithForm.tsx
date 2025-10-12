@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Sheet,
   SheetTrigger,
@@ -10,8 +10,11 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Mail, MessageCircle, Link } from "lucide-react";
+import { ActionNodetype, INode } from "@repo/types/zodSchema";
+import { workflowContext } from "@/context/workflowContext";
+import { nanoid } from "nanoid";
 
-type ActionType = "email" | "telegram" | "http";
+type ActionType = "Action_Email" | "Action_Telegram";
 
 export default function ActionSheetWithForm() {
   const [open, setOpen] = useState(false);
@@ -29,9 +32,12 @@ export default function ActionSheetWithForm() {
   const [tgMessage, setTgMessage] = useState("");
 
   // http request
-  const [endpoint, setEndpoint] = useState("");
-  const [method, setMethod] = useState("POST");
 
+  const context = useContext(workflowContext);
+  if (!context) {
+    return <div className="text-4xl">error while for this component </div>;
+  }
+  const { setNodes } = context;
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
@@ -42,48 +48,45 @@ export default function ActionSheetWithForm() {
       setEmailSubject("");
       setTgChatId("");
       setTgMessage("");
-      setEndpoint("");
-      setMethod("POST");
+      // setEndpoint("");
+      // setMethod("POST");
     }
   };
 
   const AddActionNode = (actionType: ActionType) => {
     // TODO: integrate with your node/flow creation logic
     // Example payload that you can send to parent via props or context
-    const payload = {
-      id: `action_${Date.now()}`,
-      type: `action_${actionType}`,
-      position: { x: 200, y: 200 },
-      data: {
-        label: label || `${actionType} action`,
-        actionType,
-        config:
-          actionType === "email"
-            ? { to: emailTo, subject: emailSubject }
-            : actionType === "telegram"
-            ? { chatId: tgChatId, message: tgMessage }
-            : { endpoint, method },
-      },
+
+    const payload: INode = {
+      id: nanoid(5),
+      type: actionType,
+      position: { x: -200, y: 200 },
+      data: { parameters: {}, Credentials: {}, outPut: {} },
+      measured: {},
+      selected: false,
+      dragging: false,
     };
+    setNodes((prev) => [...prev, payload]);
 
     console.log("Create action node:", payload);
-
-    // If you want this component to inform parent, either accept a prop like
-    // onAddAction(payload) or update a shared store (context/zustand/etc.).
   };
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <div>
-          <div className="nodrag">
+          <div className="m-10">
             <button
-              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-500 
-                   rounded-lg w-20 h-20 text-gray-300 hover:border-blue-400 hover:text-blue-400 transition"
+              className="flex flex-col items-center justify-center border-3    hover: border-gray-500 
+                   rounded-lg w-15 h-15 text-teal-500 hover:border-blue-400 transition"
             >
-              <span className="text-3xl">+</span>
+              <span className="text-4xl font-bold">+</span>
+              <span></span>
             </button>
-            <p className="text-gray-300 mt-2 text-sm text-center">Add Action</p>
+
+            <p className="text-gray-300 mt-2 text-sm font-bold text-center">
+              Actions
+            </p>
           </div>
         </div>
       </SheetTrigger>
@@ -100,7 +103,7 @@ export default function ActionSheetWithForm() {
             <div className="space-y-3">
               <button
                 className="w-full flex items-center gap-3 p-3 border rounded hover:bg-blue-50"
-                onClick={() => setSelected("email")}
+                onClick={() => setSelected("Action_Email")}
               >
                 <Mail className="w-5 h-5 text-blue-600" />
                 <span>Email</span>
@@ -108,23 +111,23 @@ export default function ActionSheetWithForm() {
 
               <button
                 className="w-full flex items-center gap-3 p-3 border rounded hover:bg-green-50"
-                onClick={() => setSelected("telegram")}
+                onClick={() => setSelected("Action_Telegram")}
               >
                 <MessageCircle className="w-5 h-5 text-green-600" />
                 <span>Telegram</span>
               </button>
 
-              <button
+              {/* <button
                 className="w-full flex items-center gap-3 p-3 border rounded hover:bg-amber-50"
                 onClick={() => setSelected("http")}
               >
                 <Link className="w-5 h-5 text-amber-600" />
                 <span>HTTP Request</span>
-              </button>
+              </button> */}
             </div>
           )}
 
-          {selected === "email" && (
+          {selected === "Action_Email" && (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">Label</label>
@@ -165,7 +168,7 @@ export default function ActionSheetWithForm() {
                 </Button>
                 <Button
                   onClick={() => {
-                    AddActionNode("email");
+                    AddActionNode(ActionNodetype.emailAction);
                     setOpen(false);
                   }}
                 >
@@ -175,7 +178,7 @@ export default function ActionSheetWithForm() {
             </div>
           )}
 
-          {selected === "telegram" && (
+          {selected === "Action_Telegram" && (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">Label</label>
@@ -215,7 +218,7 @@ export default function ActionSheetWithForm() {
                 </Button>
                 <Button
                   onClick={() => {
-                    AddActionNode("telegram");
+                    AddActionNode("Action_Telegram");
                     setOpen(false);
                   }}
                 >
@@ -225,59 +228,7 @@ export default function ActionSheetWithForm() {
             </div>
           )}
 
-          {selected === "http" && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Label</label>
-                <input
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                  type="text"
-                  placeholder="Enter action label"
-                  className="mt-1 block w-full border rounded px-2 py-1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Endpoint URL</label>
-                <input
-                  value={endpoint}
-                  onChange={(e) => setEndpoint(e.target.value)}
-                  type="text"
-                  placeholder="https://api.example.com/endpoint"
-                  className="mt-1 block w-full border rounded px-2 py-1"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Method</label>
-                <select
-                  value={method}
-                  onChange={(e) => setMethod(e.target.value)}
-                  className="mt-1 block w-full border rounded px-2 py-1"
-                >
-                  <option>GET</option>
-                  <option>POST</option>
-                  <option>PUT</option>
-                  <option>DELETE</option>
-                </select>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setSelected(null)}>
-                  Back
-                </Button>
-                <Button
-                  onClick={() => {
-                    AddActionNode("http");
-                    setOpen(false);
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            </div>
-          )}
+         
         </div>
 
         <div className="p-4 border-t">

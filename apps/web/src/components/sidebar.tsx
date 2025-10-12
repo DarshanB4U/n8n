@@ -35,21 +35,19 @@ const items = [
   },
 ];
 
-
-
-
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating">
+    <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className=" text-2xl font-bold font-sans p-8">
-            FlowMate
-          </SidebarGroupLabel>
+          <div className=" flex-clos items-center p-1 rounded-2xl">
+           
+          </div>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem className="pt-2 pb-2" key={item.title}>
                   <SidebarMenuButton asChild>
                     <a
                       href={item.url}
@@ -61,7 +59,7 @@ export function AppSidebar() {
                     >
                       <item.icon className="w-5 h-5 text-emerald-500 " />
 
-                      <span className="text-base  font-medium font-mono tracking-wide">
+                      <span className="text-base  font-medium tracking-wide">
                         {item.title}
                       </span>
                     </a>

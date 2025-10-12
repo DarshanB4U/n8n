@@ -22,6 +22,8 @@ import { INode } from "@repo/types/zodSchema";
 import ActionSheetWithForm from "./ActionSheetWithForm";
 import { WebhookNode } from "./nodes/WebhookNode";
 import { ManualTrigger } from "@/components/nodes/ManualClickNode";
+import { Emailnode } from "./nodes/emailNode";
+import { TelegramNode } from "./nodes/telegramNode";
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -47,52 +49,16 @@ const AddNode = () => (
 
 export default function workflowEditor() {
   const { open } = useSidebar();
-  // const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
-  // const [edges, setEdges] = useState(initialEdges);
+
   const WorkflowContext = useContext(workflowContext);
   if (!WorkflowContext) {
     console.log("error in WorkflowContext");
     return;
   }
   const { nodes, edges, setNodes, setEdges, onNodesChange } = WorkflowContext;
-  // const [workflowExist, setWorkflowExist] = useState(false);
+
   const [dialogOpen, setDilogOpen] = useState(false);
 
-  // const addNode = useCallback((type: string) => {
-  //   const newNodeID = nanoid(5);
-  //   const newNode: myNode = {
-  //     id: newNodeID,
-  //     position: { x: Math.random() * 50, y: Math.random() * 200 },
-  //     type: type + "node",
-  //     data: {
-  //       parameters: {
-  //         msg: {
-  //           dfsdfdf: "fdasfdsfdsf",
-  //           sdfsdfdsfd: {
-  //             fdsfdfdf: "dsfsdfdsf",
-  //           },
-  //         },
-  //       },
-  //       Credentials: {
-  //         telegram: "uuid3434dsdf",
-  //       },
-  //     },
-  //   };
-  //   setNodes((prev) => {
-  //     console.log(initialNodes);
-
-  //     return [...prev, newNode];
-  //   });
-  // }, []);
-
-  // const onNodesChange = useCallback(
-  //   (changes) =>
-  //     addNodes((nodesSnapshot: Node[]) =>
-  //       applyNodeChanges(changes, nodesSnapshot)
-  //     ),
-
-  //   []
-  // );
   const onEdgesChange = useCallback(
     (changes: any) =>
       setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
@@ -109,17 +75,17 @@ export default function workflowEditor() {
     initial_node: TriggerSheetWithForm,
     Trigger_Webhook: WebhookNode,
     Trigger_Manual: ManualTrigger,
-    // Telegramnode: TelegramNode,
-    // Emailnode: Emailnode,
-    // manualTrigger: manualTrigger,
+    Action_Email: Emailnode,
+    Action_Telegram: TelegramNode,
   };
 
   const handleSaveClick = () => {
-    axios.post(BACKEND_URL + "/api/v0/workflow", {
-      title: "myworkflow",
-      nodes,
-      edges,
-    });
+    // axios.post(BACKEND_URL + "/api/v0/workflow", {
+    //   title: "myworkflow",
+    //   nodes,
+    //   edges,
+    // });
+    alert("workflow Saved");
   };
 
   useEffect(() => console.log(nodes, edges), [nodes]);
@@ -130,15 +96,7 @@ export default function workflowEditor() {
     >
       <main>
         <div className=" grid grid-cols-12 ">
-          <div className="col-span-4 flex  justify-center ">
-            <Button
-              onClick={handleSaveClick}
-              variant={"secondary"}
-              className="flex hover:bg-blue-200  active:bg-green-700 font-bold items-center"
-            >
-              Save
-            </Button>
-          </div>
+          <div className="col-span-4 flex  justify-center "></div>
         </div>
         <div className="h-screen w-screen  ">
           <ReactFlow
@@ -152,6 +110,20 @@ export default function workflowEditor() {
           >
             <Background></Background>
           </ReactFlow>
+
+          {nodes[0]?.type !== "initial_node" && (
+            <div className="absolute bottom-1 right-10 z-50 shadow-xl text-white ">
+              <ActionSheetWithForm></ActionSheetWithForm>
+            </div>
+          )}
+
+          <Button
+            onClick={handleSaveClick}
+            variant={"secondary"}
+            className="absolute top-1 right-10 flex hover:bg-teal-700  font-bold items-center "
+          >
+            Save
+          </Button>
         </div>
       </main>
     </div>

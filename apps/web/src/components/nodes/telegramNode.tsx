@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Handle, Position } from "@xyflow/react";
 
 export function TelegramNode(props: any ,) {
@@ -25,8 +24,8 @@ export function TelegramNode(props: any ,) {
       <Handle type="target" position={Position.Left}  />
       <Handle type="source" position={Position.Right} />
       <div
-        className="flex flex-col items-center justify-center border-2  border-gray-500 
-                   rounded-lg w-20 h-20 text-gray-500 hover:border-blue-400 hover:text-blue-400 transition"
+        className="flex flex-col items-center justify-center border-2  bg-neutral-800
+                   rounded-lg w-20 h-20 hover:border-neutral-500 hover:text-neutral-300  border-blue-400 text-blue-400 transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
