@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Email",
+    "icon": "Mail",
+    "IconColor": "red-500",
+    "Category": "Action",
+    "Description": "Send email Using Nodemailer",
+    "Credentials": [{ "name": "smtp", "required": true }],
+    "parameters": [
+      {
+        "displayName": "To",
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "description": "Recipient email address"
+      },
+      {
+        "displayName": "Subject",
+        "name": "subject",
+        "type": "string",
+        "required": true
+      },
+      {
+        "displayName": "Body",
+        "name": "body",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Telegram",
+    "icon": "Send",
+    "IconColor": "blue-600",
+    "Category": "Action",
+    "Description": "Send Message using Telegram",
+    "Credentials": [
+      { "name": "AuthToken", "required": true },
+      { "name": "Api-Key", "required": true }
+    ],
+
+    "parameters": [
+      {
+        "displayName": "To",
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "description": "Recipient Telegram No"
+      },
+
+      {
+        "displayName": "Message",
+        "name": "messageBody",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Agent",
+    "icon": "Bot",
+    "IconColor": "orange-700",
+    "Category": "Action",
+    "Description": "get response from lls ",
+    "Credentials": [{ "name": "AuthToken", "required": true }],
+    "parameters": [
+      {
+        "displayName": "prompt",
+        "name": "Prompt",
+        "type": "string",
+        "required": true,
+        "description": "System Prompt"
+      },
+
+      {
+        "displayName": "Prompt-Message",
+        "name": "Prompt-message",
+        "type": "string",
+        "required": true
+      }
+    ]
+  }
+]

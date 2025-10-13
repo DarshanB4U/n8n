@@ -1,5 +1,10 @@
 "use client";
-import React, { createContext, useState, useContext, SetStateAction } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  SetStateAction,
+} from "react";
 import {
   ActionNodetype,
   IEdge,
@@ -17,7 +22,7 @@ interface WorkflowContext extends Workflow {
   // deleteNode: (id: string) => void;
   // removeEdge: (edge: string) => void;
   actionSheetOpen: boolean;
-  SetActionSheetOpen:React.Dispatch<SetStateAction<boolean>>
+  SetActionSheetOpen: React.Dispatch<SetStateAction<boolean>>;
   setNodes: React.Dispatch<React.SetStateAction<INode[]>>;
   setEdges: React.Dispatch<React.SetStateAction<IEdge[]>>;
   onNodesChange: OnNodesChange<INode>;
@@ -50,7 +55,25 @@ export const WorkflowProivider = ({
       id: "0-initial",
       type: TriggerNodetype.initialNode,
       position: { x: -136, y: 200 },
-      data: { parameters: {}, Credentials: {}, outPut: {} },
+      data: { nodeRegid: 1, parameters: {}, Credentials: {}, outPut: {} },
+      measured: {},
+      selected: false,
+      dragging: false,
+    },
+    {
+      id: "1-ifdkf",
+      type: "Action",
+      position: { x: -136, y: 200 },
+      data: { nodeRegid: 1, parameters: {}, Credentials: {}, outPut: {} },
+      measured: {},
+      selected: false,
+      dragging: false,
+    },
+    {
+      id: "1fdsfdf-ifdkf",
+      type: "Action",
+      position: { x: -136, y: 200 },
+      data: { nodeRegid: 2, parameters: {}, Credentials: {}, outPut: {} },
       measured: {},
       selected: false,
       dragging: false,
@@ -66,7 +89,7 @@ export const WorkflowProivider = ({
   //   setEdges((prev) => prev.filter((e) => e.source !== id && e.target !== id));
   // };
   // const removeEdge = (id: string) =>
-  //   setEdges((prev) => prev.filter((e) => e.id !== id));
+  // setEdges((prev) => prev.filter((e) => e.id !== id));
 
   return (
     <workflowContext.Provider
@@ -77,8 +100,7 @@ export const WorkflowProivider = ({
         setEdges,
         onNodesChange,
         actionSheetOpen,
-        SetActionSheetOpen
-
+        SetActionSheetOpen,
       }}
     >
       {children}

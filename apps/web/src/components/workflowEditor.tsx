@@ -24,6 +24,7 @@ import { WebhookNode } from "./nodes/WebhookNode";
 import { ManualTrigger } from "@/components/nodes/ManualClickNode";
 import { Emailnode } from "./nodes/emailNode";
 import { TelegramNode } from "./nodes/telegramNode";
+import { CostomAction } from "./nodes/CostomActionNode";
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -77,6 +78,7 @@ export default function workflowEditor() {
     Trigger_Manual: ManualTrigger,
     Action_Email: Emailnode,
     Action_Telegram: TelegramNode,
+    Action:CostomAction
   };
 
   const handleSaveClick = () => {

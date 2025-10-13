@@ -2,26 +2,31 @@ import { z } from "zod";
 
 export const TriggerNodetype = {
   manualTrigger: "Trigger_Manual",
-  emailAction: "Action_Email",
   webhookTrigger: "Trigger_Webhook",
-  telegramAction: "Action_Telegram",
   initialNode: "initial_node",
-  addNode: "addnode",
+  
+} as const;
+export const ActionNodetype = {
+  telegramAction: "Action_Telegram",
+  emailAction: "Action_Email",
+  Action: "Action",
 } as const;
 
 export const nodeType = z.enum([
   TriggerNodetype.manualTrigger,
   TriggerNodetype.webhookTrigger,
-  TriggerNodetype.emailAction,
-  TriggerNodetype.telegramAction,
+  ActionNodetype.emailAction,
+  ActionNodetype.telegramAction,
   TriggerNodetype.initialNode,
-  TriggerNodetype.addNode,
+  ActionNodetype.Action
+    
 ]);
 export const positionSchema = z.object({
   x: z.number(),
   y: z.number(),
 });
 export const nodeDataSchema = z.object({
+  nodeRegid: z.number(),
   parameters: z.record(z.string(), z.string()).optional().default({}),
   Credentials: z.record(z.string(), z.string()).optional().default({}),
   outPut: z.record(z.string(), z.string()).optional().default({}),
@@ -69,3 +74,4 @@ export const signupBody = z.object({
 export type INode = z.infer<typeof nodeSchema>;
 export type IEdge = z.infer<typeof edgeSchema>;
 export type Workflow = z.infer<typeof workflowBody>;
+export type INodeData = z.infer<typeof nodeDataSchema>;

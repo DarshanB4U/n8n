@@ -1,8 +1,11 @@
-
+import CostomDrawer from "@/components/CostomDrawer";
+import MyActionSheet from "@/components/MyActionSheet";
 
 export default function Home() {
- 
   return (
-    <>main page</>
+    <div>
+      <MyActionSheet></MyActionSheet>
+      <CostomDrawer></CostomDrawer>
+    </div>
   );
 }
