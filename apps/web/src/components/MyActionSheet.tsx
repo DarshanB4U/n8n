@@ -27,6 +27,7 @@ export default function MyActionSheet() {
     );
   }
   const { setNodes } = context;
+  // const [open, setOpen] = useState(false);
 
   const AddNode = (regId: number) => {
     setNodes((prev) => [
@@ -42,8 +43,8 @@ export default function MyActionSheet() {
       },
     ]);
     toast.success("New Action Added");
+    
   };
-  const [open, setOpen] = useState(false);
 
   // const [selected, setSelected] = useState<ActionType | null>(null);
 
@@ -88,7 +89,7 @@ export default function MyActionSheet() {
                     <span>{node.name}</span>
                   </button>
                 </div>
-                </div>
+              </div>
             );
           })}
         </SheetContent>

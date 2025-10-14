@@ -1,9 +1,5 @@
 "use client";
-import React, {
-  createContext,
-  useState,
-  SetStateAction,
-} from "react";
+import React, { createContext, useState, SetStateAction } from "react";
 import {
   ActionNodetype,
   IEdge,
@@ -16,6 +12,7 @@ import { OnNodesChange, useNodesState } from "@xyflow/react";
 interface WorkflowContext extends Workflow {
   nodes: INode[];
   edges: IEdge[];
+  credentials:[];
   // addNode: (node: INode) => void;
   // addEdge: (edge: IEdge) => void;
   // deleteNode: (id: string) => void;
@@ -36,17 +33,6 @@ export const WorkflowProivider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  // const [nodes, setNodes] = useState<INode[]>([
-  //   {
-  //     id: "0-initial",
-  //     type: TriggerNodetype.initialNode,
-  //     position: { x: -136, y: 200 },
-  //     data: { parameters: {}, Credentials: {}, outPut: {} },
-  //     measured: {},
-  //     selected: false,
-  //     dragging: false,
-  //   },
-  // ]);
   const [actionSheetOpen, SetActionSheetOpen] = useState(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<INode>([

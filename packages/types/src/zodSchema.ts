@@ -4,22 +4,16 @@ export const TriggerNodetype = {
   manualTrigger: "Trigger_Manual",
   webhookTrigger: "Trigger_Webhook",
   initialNode: "initial_node",
-  
 } as const;
 export const ActionNodetype = {
-  telegramAction: "Action_Telegram",
-  emailAction: "Action_Email",
   Action: "Action",
 } as const;
 
 export const nodeType = z.enum([
   TriggerNodetype.manualTrigger,
   TriggerNodetype.webhookTrigger,
-  ActionNodetype.emailAction,
-  ActionNodetype.telegramAction,
   TriggerNodetype.initialNode,
-  ActionNodetype.Action
-    
+  ActionNodetype.Action,
 ]);
 export const positionSchema = z.object({
   x: z.number(),
@@ -27,7 +21,7 @@ export const positionSchema = z.object({
 });
 export const nodeDataSchema = z.object({
   nodeRegid: z.number(),
-  parameters: z.record(z.string(), z.string()).optional().default({}),
+  Parameters: z.record(z.string(), z.string()).optional().default({}),
   Credentials: z.record(z.string(), z.string()).optional().default({}),
   outPut: z.record(z.string(), z.string()).optional().default({}),
 });
