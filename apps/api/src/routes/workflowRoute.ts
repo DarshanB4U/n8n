@@ -1,8 +1,6 @@
 import { prisma } from "@repo/db";
 import {
   workflowBody,
-  Nodes,
-  Edges,
   TriggerNodetype,
 } from "@repo/types/zodSchema";
 import { Router } from "express";
@@ -35,12 +33,12 @@ workflowRouter.post("/", authMiddleware, async (req, res) => {
     });
     const Trigger = workflow.data.nodes[0];
     if (Trigger?.type == TriggerNodetype.webhookTrigger) {
-      const method = workflow.data.nodes[0]?.data.parameters.method as string;
+      const method = workflow.data.nodes[0]?.data.Parameters.method as string;
       const path = `/webhook/${workflowRes.id}`;
-      const secret = workflow.data.nodes[0]?.data.parameters.secret as string;
+      const secret = workflow.data.nodes[0]?.data.Parameters.secret as string;
       const webhookTitle = workflow.data.nodes[0]?.data.Credentials
         .secret as string;
-      const header = workflow.data.nodes[0]?.data.parameters.header as string;
+      const header = workflow.data.nodes[0]?.data.Parameters.header as string;
       const webhook = prisma.webhook.create({
         data: {
           method,

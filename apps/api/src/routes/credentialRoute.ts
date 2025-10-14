@@ -2,7 +2,6 @@ import { prisma } from "@repo/db";
 import { CredentialsBody, deleteCredentialBody } from "@repo/types/zodSchema";
 import { Router } from "express";
 import { authMiddleware } from "../middlware/authmiddlware";
-import { log } from "console";
 
 const credentialRouter: Router = Router();
 
