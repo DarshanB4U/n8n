@@ -2,7 +2,6 @@
 import React, {
   createContext,
   useState,
-  useContext,
   SetStateAction,
 } from "react";
 import {
@@ -55,25 +54,7 @@ export const WorkflowProivider = ({
       id: "0-initial",
       type: TriggerNodetype.initialNode,
       position: { x: -136, y: 200 },
-      data: { nodeRegid: 1, parameters: {}, Credentials: {}, outPut: {} },
-      measured: {},
-      selected: false,
-      dragging: false,
-    },
-    {
-      id: "1-ifdkf",
-      type: "Action",
-      position: { x: -136, y: 200 },
-      data: { nodeRegid: 1, parameters: {}, Credentials: {}, outPut: {} },
-      measured: {},
-      selected: false,
-      dragging: false,
-    },
-    {
-      id: "1fdsfdf-ifdkf",
-      type: "Action",
-      position: { x: -136, y: 200 },
-      data: { nodeRegid: 2, parameters: {}, Credentials: {}, outPut: {} },
+      data: { nodeRegid: 1, Parameters: {}, Credentials: {}, outPut: {} },
       measured: {},
       selected: false,
       dragging: false,

@@ -15,16 +15,14 @@ import { useState, useCallback, useEffect, useContext } from "react";
 import { nanoid } from "nanoid";
 import axios from "axios";
 import { TriggerSheetWithForm } from "@/components/TriggerSheetWithForm";
-import CostomeTnode from "./CostomeTnode";
 import { useSidebar } from "./ui/sidebar";
 import { workflowContext } from "@/context/workflowContext";
 import { INode } from "@repo/types/zodSchema";
-import ActionSheetWithForm from "./ActionSheetWithForm";
+
 import { WebhookNode } from "./nodes/WebhookNode";
 import { ManualTrigger } from "@/components/nodes/ManualClickNode";
-import { Emailnode } from "./nodes/emailNode";
-import { TelegramNode } from "./nodes/telegramNode";
 import { CostomAction } from "./nodes/CostomActionNode";
+import MyActionSheet from "./MyActionSheet";
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -76,9 +74,7 @@ export default function workflowEditor() {
     initial_node: TriggerSheetWithForm,
     Trigger_Webhook: WebhookNode,
     Trigger_Manual: ManualTrigger,
-    Action_Email: Emailnode,
-    Action_Telegram: TelegramNode,
-    Action:CostomAction
+    Action: CostomAction,
   };
 
   const handleSaveClick = () => {
@@ -115,7 +111,7 @@ export default function workflowEditor() {
 
           {nodes[0]?.type !== "initial_node" && (
             <div className="absolute bottom-1 right-10 z-50 shadow-xl text-white ">
-              <ActionSheetWithForm></ActionSheetWithForm>
+              <MyActionSheet></MyActionSheet>
             </div>
           )}
 

@@ -19,13 +19,15 @@
         "displayName": "Subject",
         "name": "subject",
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "Email Subject"
       },
       {
         "displayName": "Body",
         "name": "body",
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "Email Body"
       }
     ]
   },
@@ -45,7 +47,7 @@
       {
         "displayName": "To",
         "name": "to",
-        "type": "string",
+        "type": "number",
         "required": true,
         "description": "Recipient Telegram No"
       },
@@ -54,7 +56,8 @@
         "displayName": "Message",
         "name": "messageBody",
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "Enter Message You want to send "
       }
     ]
   },
@@ -79,7 +82,8 @@
         "displayName": "Prompt-Message",
         "name": "Prompt-message",
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "System Prompt"
       }
     ]
   }

@@ -15,28 +15,88 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { workflowContext } from "@/context/workflowContext";
 const nodesReg = nodeRegistery;
 
 export function CostomAction({ id, data }: { id: string; data: INodeData }) {
-  const [formvalues, setFormValues] = useState<Record<string, string>>({});
-  const metaNode = nodesReg.filter((node) => node.id == data.nodeRegid);
-  const node = metaNode[0];
-
-  const IconComponent = Icons[metaNode[0]?.icon as keyof typeof Icons.icons];
+  interface form {
+    Parameters: Record<string, string>;
+    Credentials: Record<string, string>;
+  }
   const context = useContext(workflowContext);
   if (!context) {
     return <div>Error while Loading context </div>;
   }
+  const [formValues, setFormValues] = useState<form>(data);
+  const metaNode = nodesReg.filter((node) => node.id == data.nodeRegid);
+  const node = metaNode[0];
+  const IconComponent = Icons[metaNode[0]?.icon as keyof typeof Icons.icons];
 
   const { setNodes, nodes } = context;
-
-  // function handleSaveClick (){
-
-    
-  //   setNodes((prev)=>)
+  // function handle() {
+  //   setNodes((prev) =>
+  //     prev.map((node) => {
+  //       if (node.id === id) {
+  //         return {
+  //           ...node,
+  //           data: {
+  //             ...node.data,
+  //             Credentials: formValues.Credentials,
+  //             Parameters: formValues.Parameters,
+  //           },
+  //         };
+  //       }
+  //       return node;
+  //     })
+  //   );
   // }
+
+  function handleDelete() {
+    setNodes((prev) => prev.filter((node) => node.id !== id));
+  }
+
+  function handleSaveClick() {
+    setNodes((prev) =>
+      prev.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              Parameters: formValues.Parameters,
+              Credentials: formValues.Credentials,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }
+  // function handleInputChange(e:Event){
+  //   const newvalue = e.target.value
+
+  // }
+  function handleParamInputChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+    paramName: string
+  ) {
+    // Access the input's new value
+    const { value } = event.target;
+    setFormValues((prev) => ({
+      ...prev,
+      Parameters: {
+        ...prev.Parameters,
+        [paramName]: value,
+      },
+    }));
+
+    // Perform actions with the new value, such as:
+    // - Updating state (in React, using useState)
+    // - Validating the input
+    // - Displaying the value
+    console.log("Input value changed to:");
+  }
 
   return (
     <Dialog>
@@ -99,7 +159,10 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
                   <Label>{parameter.displayName}</Label>
                   <Input
                     required={parameter.required}
-                    placeholder={parameter.description}
+                    placeholder={`${parameter.description}`}
+                    value={`${formValues.Parameters[parameter.name] || " "}`}
+                    onChange={(e) => handleParamInputChange(e, parameter.name)}
+                    type={`${parameter.type}`}
                   />
                 </div>
               );
@@ -108,8 +171,13 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
           <DialogFooter>
             <DialogClose asChild>
-              {/* <Button variant="outline">Cancel</Button> */}
-              <Button onClick={} type="submit">
+              <Button onClick={()=>handleDelete()} variant={"destructive"}>
+                
+                Delete
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button onClick={handleSaveClick} type="submit">
                 Save changes
               </Button>
             </DialogClose>

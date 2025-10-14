@@ -43,7 +43,7 @@ export function TriggerSheetWithForm() {
         id: id,
         type: TriggerType,
         position: { x: -200, y: 200 },
-        data: { parameters: {}, Credentials: {}, outPut: {} },
+        data: { nodeRegid: 9, Parameters: {}, Credentials: {}, outPut: {} },
         measured: {},
         selected: false,
         dragging: false,

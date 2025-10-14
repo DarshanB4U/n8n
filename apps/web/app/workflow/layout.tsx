@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { log } from "console";
 export default function WorkflowLayout({
   children,
@@ -10,11 +11,13 @@ export default function WorkflowLayout({
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <main >
+        <main>
           <SidebarTrigger className="bg-teal-900" />
 
           <div>{children}</div>
         </main>
+
+        <Toaster />
       </SidebarProvider>
     </div>
   );
