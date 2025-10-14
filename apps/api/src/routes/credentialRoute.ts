@@ -5,6 +5,23 @@ import { authMiddleware } from "../middlware/authmiddlware";
 
 const credentialRouter: Router = Router();
 
+credentialRouter.get("/", authMiddleware, async (req, res) => {
+  try {
+    const credentials = await prisma.credentials.findMany({
+      where: {
+        userId: req.userID,
+      },
+    });
+
+    return res
+      .status(201)
+      .json({ msg: "fetched users credentials ", credentials });
+  } catch (error) {
+    console.log("error while fetching credentials ", error);
+    return res.status(400).json({ msg: "error while fetching  Credentials" });
+  }
+});
+
 credentialRouter.post("/", authMiddleware, async (req, res) => {
   try {
     const { data, success } = CredentialsBody.safeParse(req.body);
