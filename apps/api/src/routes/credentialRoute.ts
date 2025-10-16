@@ -9,9 +9,13 @@ credentialRouter.get("/", authMiddleware, async (req, res) => {
   try {
     const credentials = await prisma.credentials.findMany({
       where: {
-        userId: req.userID,
+        user:{
+          id:req.userID
+        }
       },
     });
+
+    
 
     return res
       .status(201)
@@ -73,6 +77,21 @@ credentialRouter.delete("/", authMiddleware, async (req, res) => {
     return res.status(202).json({ msg: "deleted the credential" });
   } catch (error) {
     console.log("error while deleting credential", error);
+  }
+});
+
+credentialRouter.post("/getCredentials", authMiddleware, async (req, res) => {
+  try {
+    const crednetials = await prisma.credentials.findMany({
+      where: {
+        id: req.userID,
+      },
+    });
+
+    return res.status(200).json({ crednetials });
+  } catch (error) {
+    console.log("error while  fetching credential", error);
+    res.status(401).json({ msg: "unable to load credentials " });
   }
 });
 

@@ -48,11 +48,15 @@ export const workflowBody = z.object({
   nodes: z.array(nodeSchema),
   edges: z.array(edgeSchema),
 });
+export const ICredentialbody = z.object({
+  name: z.string(),
+  value: z.string(),
+});
 
 export const CredentialsBody = z.object({
   type: z.enum(["TELEGRAM", "EMAIL"]),
   title: z.string(),
-  credentialsData: z.record(z.string(), z.string()),
+  credentialsData: z.array(ICredentialbody),
 });
 
 export const deleteCredentialBody = z.object({
@@ -69,3 +73,4 @@ export type INode = z.infer<typeof nodeSchema>;
 export type IEdge = z.infer<typeof edgeSchema>;
 export type Workflow = z.infer<typeof workflowBody>;
 export type INodeData = z.infer<typeof nodeDataSchema>;
+export type ICredentials = z.infer<typeof ICredentialbody>;

@@ -39,7 +39,7 @@ authRouter.post("/signup", async (req, res) => {
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
 
-    const url = `${Backend_URL}/api/v0/auth/signin/post?token=${token}`;
+    const url = `${Backend_URL}/auth/signin/post?token=${token}`;
     console.log(url);
 
     const info = await transporter.sendMail({
@@ -98,5 +98,32 @@ authRouter.post("/signin", async (req, res) => {
 
   res.send("msg form signin");
 });
+authRouter.post("/me", async (req, res) => {
+  const token = req.cookies.authToken as myPayload;
+  if (!token) {
+    return res.status(401).json("invalid  AuthToken");
+  }
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: token.userID,
+      },
+    });
+    return res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({
+      msg: "userAuthFailed",
+    });
+  }
+});
 
+
+
+authRouter.post("/logout", async (req, res) => {
+  const token = req.cookies.authToken as myPayload;
+
+});
 export { authRouter };

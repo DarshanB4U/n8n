@@ -12,7 +12,6 @@ import { OnNodesChange, useNodesState } from "@xyflow/react";
 interface WorkflowContext extends Workflow {
   nodes: INode[];
   edges: IEdge[];
-  credentials:[];
   // addNode: (node: INode) => void;
   // addEdge: (edge: IEdge) => void;
   // deleteNode: (id: string) => void;
