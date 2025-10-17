@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { platform } from "os";
+import { optional, z } from "zod";
 
 export const TriggerNodetype = {
   manualTrigger: "Trigger_Manual",
@@ -54,7 +55,8 @@ export const ICredentialbody = z.object({
 });
 
 export const CredentialsBody = z.object({
-  type: z.enum(["TELEGRAM", "EMAIL"]),
+  id: z.string().optional(),
+  platform: z.enum(["TELEGRAM", "EMAIL"]),
   title: z.string(),
   credentialsData: z.array(ICredentialbody),
 });
@@ -74,3 +76,4 @@ export type IEdge = z.infer<typeof edgeSchema>;
 export type Workflow = z.infer<typeof workflowBody>;
 export type INodeData = z.infer<typeof nodeDataSchema>;
 export type ICredentials = z.infer<typeof ICredentialbody>;
+export type Credentials = z.infer<typeof CredentialsBody>;

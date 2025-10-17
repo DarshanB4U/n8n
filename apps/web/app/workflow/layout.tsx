@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { CredentialProvider } from "@/context/credentialContext";
 export default function WorkflowLayout({
   children,
 }: {
@@ -8,16 +9,18 @@ export default function WorkflowLayout({
 }) {
   return (
     <div>
-      <SidebarProvider>
-        <AppSidebar />
-        <main>
-          <SidebarTrigger className="bg-teal-900" />
+      <CredentialProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <main>
+            <SidebarTrigger className="bg-teal-900" />
 
-          <div>{children}</div>
-        </main>
+            <div>{children}</div>
+          </main>
 
-        <Toaster />
-      </SidebarProvider>
+          <Toaster />
+        </SidebarProvider>
+      </CredentialProvider>
     </div>
   );
 }

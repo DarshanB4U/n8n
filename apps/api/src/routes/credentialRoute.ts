@@ -9,17 +9,15 @@ credentialRouter.get("/", authMiddleware, async (req, res) => {
   try {
     const credentials = await prisma.credentials.findMany({
       where: {
-        user:{
-          id:req.userID
-        }
+        user: {
+          id: req.userID,
+        },
       },
     });
 
-    
-
     return res
       .status(201)
-      .json({ msg: "fetched users credentials ", credentials });
+      .json({ msg: "fetched users credentials for this route", credentials });
   } catch (error) {
     console.log("error while fetching credentials ", error);
     return res.status(400).json({ msg: "error while fetching  Credentials" });
@@ -29,6 +27,7 @@ credentialRouter.get("/", authMiddleware, async (req, res) => {
 credentialRouter.post("/", authMiddleware, async (req, res) => {
   try {
     const { data, success } = CredentialsBody.safeParse(req.body);
+
     if (success !== true) {
       return res.status(401).json({ msg: "invalid credentialsBody" });
     }
@@ -38,9 +37,9 @@ credentialRouter.post("/", authMiddleware, async (req, res) => {
     const credentials = await prisma.credentials.create({
       data: {
         userId: req.userID,
-        platform: data.type,
+        platform: data.platform,
         title: data.title,
-        CredentailData: data.credentialsData,
+        credentialData: data.credentialsData
       },
     });
 
@@ -52,7 +51,7 @@ credentialRouter.post("/", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.log("this is error ", error);
-    return res.status(400).json({ msg: "invalid signup body or error " });
+    return res.status(400).json({ msg: "unable to to create credentials  " });
   }
 });
 

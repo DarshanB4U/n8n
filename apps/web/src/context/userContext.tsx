@@ -39,7 +39,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const res = await api.get("/auth/me"); // or your user endpoint
+      const res = await api.post("/auth/me"); // or your user endpoint
       setUser(res.data);
       setIsAuthenticated(true);
     } catch {

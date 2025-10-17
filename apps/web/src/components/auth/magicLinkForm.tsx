@@ -9,6 +9,7 @@ import api from "@/lib/api";
 import { Loader2, Mail, User } from "lucide-react";
 import { UserContext } from "@/context/userContext";
 import { Card } from "../ui/card";
+import Link from "next/link";
 
 type Mode = "signin" | "signup";
 
@@ -28,7 +29,7 @@ export default function MagicLinkForm({
     return (
       <div className=" p-5 flex justify-items-center m2">
         <Card className="text-2xl p-5 text-red-400">
-          Error While Loading UserContext
+          s Error While Loading UserContext
         </Card>
       </div>
     );
@@ -83,9 +84,20 @@ export default function MagicLinkForm({
   return (
     <div>
       {isAuthenticated ? (
-        <div className=" p-5 flex justify-items-center ">
-          <Card className="text-2xl p-5 text-red-400">
-            User Already Loggedin
+        <div className="flex items-center justify-center min-h-[60vh] ">
+          <Card className="p-6 border border-[#f0d6b4] rounded-xl text-center  shadow-sm">
+            <h2 className="text-2xl font-semibold text-blue-50 tracking-tight">
+              Already Logged In
+            </h2>
+            <p className="text-neutral-400 mt-2 mb-4 text-sm">
+              You’re already signed in. Continue to your workspace.
+            </p>
+            <Link
+              href="/workflow"
+              className="inline-block text-orange-600 text-sm font-medium hover:text-blue-900 underline-offset-2 hover:underline transition-all"
+            >
+              Go to Home →
+            </Link>
           </Card>
         </div>
       ) : (
