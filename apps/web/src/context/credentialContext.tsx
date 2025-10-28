@@ -5,7 +5,6 @@ import React, { createContext, useState, useEffect, useCallback } from "react";
 import api from "@/lib/api";
 import { Credentials } from "@repo/types/zodSchema";
 import { toast } from "sonner";
-import { platform } from "os";
 import { AxiosResponse } from "axios";
 
 export interface CredentialContextType {
@@ -52,17 +51,17 @@ export const CredentialProvider = ({
       console.log(error);
     }
   }, []);
+
   const CreateCredential = useCallback(async (credentialData: Credentials) => {
     const data = credentialData;
 
     try {
       const CreatedCredential = await api.post<AxiosResponse<Credentials>>(
-        "/",
+        "/credential",
         data
       );
 
-      fetchCredentials();
-      toast.success(`created  -${CreatedCredential.data.data.id}`);
+      await fetchCredentials();
     } catch (error) {
       console.log(error);
     }

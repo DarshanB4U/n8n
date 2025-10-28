@@ -54,6 +54,7 @@ export default function workflowEditor() {
     console.log("error in WorkflowContext");
     return;
   }
+ 
   const { nodes, edges, setNodes, setEdges, onNodesChange } = WorkflowContext;
 
   const [dialogOpen, setDilogOpen] = useState(false);

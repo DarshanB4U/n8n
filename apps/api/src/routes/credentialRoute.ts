@@ -39,7 +39,7 @@ credentialRouter.post("/", authMiddleware, async (req, res) => {
         userId: req.userID,
         platform: data.platform,
         title: data.title,
-        credentialData: data.credentialsData
+        credentialData: data.credentialsData,
       },
     });
 
