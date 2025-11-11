@@ -15,8 +15,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { workflowContext } from "@/context/workflowContext";
+import { CredentialContext } from "@/context/credentialContext";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+  SelectLabel,
+} from "../ui/select";
 const nodesReg = nodeRegistery;
 
 export function CostomAction({ id, data }: { id: string; data: INodeData }) {
@@ -26,8 +37,16 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
   }
   const context = useContext(workflowContext);
   if (!context) {
-    return <div>Error while Loading context </div>;
+    return (
+      <div className="bg-red-500">Error while Loading Workflowcontext </div>
+    );
   }
+  const CredContext = useContext(CredentialContext);
+  if (!CredContext) {
+    return <div className="bg-red-500">error while loading credContext </div>;
+  }
+  const [selectedCred, setSelectedCred] = useState<string>();
+  const { credentials } = CredContext;
   const [formValues, setFormValues] = useState<form>(data);
   const metaNode = nodesReg.filter((node) => node.id == data.nodeRegid);
   const node = metaNode[0];
@@ -52,11 +71,27 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
   //   );
   // }
 
+  // useEffect(
+  //   () => console.log(credentials, selectedCred, "selectedcredentialid "),
+  //   [selectedCred]
+  // );
+  useEffect(() => console.log("nodes", nodes), [nodes]);
+
+  // useEffect(() => {
+  //   return console.log(
+  //     "tgis is filtred node cred",
+  //     credentials?.filter((c) => c.platform == node?.name.toUpperCase())
+  //   );
+  // });
+
   function handleDelete() {
     setNodes((prev) => prev.filter((node) => node.id !== id));
   }
 
   function handleSaveClick() {
+    if (!selectedCred) {
+      return alert("select credential before saving ");
+    }
     setNodes((prev) =>
       prev.map((node) => {
         if (node.id === id) {
@@ -65,7 +100,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
             data: {
               ...node.data,
               Parameters: formValues.Parameters,
-              Credentials: formValues.Credentials,
+              Credentials: { CredentialId: selectedCred },
             },
           };
         }
@@ -106,8 +141,8 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
             <div
-              className="flex flex-col items-center justify-center border-2 border-neutral-500
-                    rounded-lg w-20 h-20  hover:text-neutral-400 bg-neutral-800  hover:border-teal-900 text-orange-400 transition"
+              className="flex flex-col  items-center justify-center border-2 border-neutral-500
+                    rounded-lg w-20 h-20  hover:text-neutral-400 bg-neutral-800  hover:border-orange-800 text-orange-400 transition"
             >
               {IconComponent && (
                 <IconComponent
@@ -126,9 +161,9 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
             )}
 
             <DialogTitle>{node?.name}</DialogTitle>
-            <DialogDescription>
+            {/* <DialogDescription>
               {node?.Description} <h1>node id {id}</h1>{" "}
-            </DialogDescription>
+            </DialogDescription> */}
           </DialogHeader>
 
           <div className="grid gap-4">
@@ -136,7 +171,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
               <Label className="text-xl">Credentials</Label>
             )}
 
-            {node?.Credentials?.map((Credential) => {
+            {/* {node?.Credentials?.map((Credential) => {
               return (
                 <div className="grid gap-3">
                   <Label>{Credential.name}</Label>
@@ -146,7 +181,37 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
                   />
                 </div>
               );
-            })}
+            })} */}
+
+            <div className="grid gap-2">
+              <Label>Credentials</Label>
+              <Select onValueChange={(value: string) => setSelectedCred(value)}>
+                <SelectTrigger
+                  className="w-full"
+                  aria-label="Select Credentials"
+                >
+                  <SelectValue placeholder="Select Credentials" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Credentials</SelectLabel>
+                    {credentials
+                      ?.filter((c) => c.platform == node?.name.toUpperCase())
+                      .map((c) => {
+                        if (!c.id) {
+                          return <div>id not present </div>;
+                        }
+                        return (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.title}
+                          </SelectItem>
+                        );
+                      })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="grid gap-4">
             {node?.parameters.length !== 0 && (
@@ -155,7 +220,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
             {node?.parameters?.map((parameter) => {
               return (
-                <div className="grid gap-3">
+                <div className="grid gap-3" id={parameter.name}>
                   <Label>{parameter.displayName}</Label>
                   <Input
                     required={parameter.required}
@@ -171,8 +236,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button onClick={()=>handleDelete()} variant={"destructive"}>
-                
+              <Button onClick={() => handleDelete()} variant={"destructive"}>
                 Delete
               </Button>
             </DialogClose>

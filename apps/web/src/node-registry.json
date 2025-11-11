@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Email",
     "icon": "Mail",
-    "IconColor": "red-500",
+    "IconColor": "green-600",
     "Category": "Action",
     "Description": "Send email Using Nodemailer",
     "Credentials": [{ "name": "smtp", "required": true }],

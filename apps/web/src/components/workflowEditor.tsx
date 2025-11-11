@@ -23,6 +23,7 @@ import { WebhookNode } from "./nodes/WebhookNode";
 import { ManualTrigger } from "@/components/nodes/ManualClickNode";
 import { CostomAction } from "./nodes/CostomActionNode";
 import MyActionSheet from "./MyActionSheet";
+import { Params } from "next/dist/server/request/params";
 
 const BACKEND_URL = "http://localhost:8000";
 
@@ -46,7 +47,7 @@ const AddNode = () => (
   </div>
 );
 
-export default function workflowEditor() {
+export default function workflowEditor({ workflowId }: { workflowId: string }) {
   const { open } = useSidebar();
 
   const WorkflowContext = useContext(workflowContext);
@@ -54,7 +55,7 @@ export default function workflowEditor() {
     console.log("error in WorkflowContext");
     return;
   }
- 
+
   const { nodes, edges, setNodes, setEdges, onNodesChange } = WorkflowContext;
 
   const [dialogOpen, setDilogOpen] = useState(false);
@@ -84,7 +85,8 @@ export default function workflowEditor() {
     //   nodes,
     //   edges,
     // });
-    alert("workflow Saved");
+
+    alert(workflowId);
   };
 
   useEffect(() => console.log(nodes, edges), [nodes]);
@@ -104,6 +106,8 @@ export default function workflowEditor() {
             nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            zoomOnScroll={true}
+            zoomOnPinch={true}
             onConnect={onConnect}
             fitView
           >

@@ -37,7 +37,7 @@ credentialRouter.post("/", authMiddleware, async (req, res) => {
     const credentials = await prisma.credentials.create({
       data: {
         userId: req.userID,
-        platform: data.platform,
+        platform: data.platform, 
         title: data.title,
         credentialData: data.credentialsData,
       },

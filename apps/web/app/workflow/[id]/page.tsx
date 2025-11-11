@@ -1,7 +1,6 @@
 import { WorkflowProivider } from "@/context/workflowContext";
 
 import WorkflowEditor from "@/components/workflowEditor";
-import { useSidebar } from "@/components/ui/sidebar";
 
 // import { WorkflowProivider } from "@/context/workflowContext";
 interface WorkflowPageProps {
@@ -14,9 +13,8 @@ export default function SingleWorkflowPage({ params }: WorkflowPageProps) {
     <div>
       <WorkflowProivider>
         <div className="flex-col">
-          <WorkflowEditor></WorkflowEditor>
+          <WorkflowEditor workflowId={id}></WorkflowEditor>
         </div>
-
         {/* Render workflow editor here */}
       </WorkflowProivider>
     </div>

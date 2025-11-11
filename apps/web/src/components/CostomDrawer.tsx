@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+console.log();
 export default function CostomDrawer() {
   return (
     <Dialog>
@@ -42,7 +42,6 @@ export default function CostomDrawer() {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <DialogClose>
-              
               <Button type="submit">Save changes</Button>
             </DialogClose>
           </DialogFooter>
@@ -51,3 +50,5 @@ export default function CostomDrawer() {
     </Dialog>
   );
 }
+const darshan = "askdfjasdfkjl";
+console.log(darshan);

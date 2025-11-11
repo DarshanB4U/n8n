@@ -1,5 +1,4 @@
-import { platform } from "os";
-import { optional, z } from "zod";
+import { z } from "zod";
 
 export const TriggerNodetype = {
   manualTrigger: "Trigger_Manual",
@@ -30,7 +29,7 @@ export const nodeDataSchema = z.object({
 export const nodeSchema = z.object({
   id: z.string(),
   type: nodeType,
-  position: positionSchema,
+  position: positionSchema,                    
   data: nodeDataSchema,
   measured: z.object(),
   selected: z.boolean().optional().default(false),

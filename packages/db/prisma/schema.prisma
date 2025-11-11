@@ -41,9 +41,9 @@ model Workflow {
 }
 
 enum CredentialTypes {
-  Telegram
+  TELEGRAM
   OpenAi
-  Gmail
+  EMAIL
 }
 
 model Webhook {

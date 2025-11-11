@@ -1,22 +1,30 @@
 import { prisma } from "@repo/db";
-import {
-  workflowBody,
-  TriggerNodetype,
-} from "@repo/types/zodSchema";
+import { workflowBody, TriggerNodetype } from "@repo/types/zodSchema";
 import { Router } from "express";
-import { authMiddleware } from "../middlware/authmiddlware";
 import { error } from "node:console";
 import { redisClient } from "../redis/myredis";
 
 const workflowRouter: Router = Router();
 
-workflowRouter.post("/", authMiddleware, async (req, res) => {
+workflowRouter.get("/", async (req, res) => {
+  try {
+    const Workflows = await prisma.workflow.findMany({
+      where: {
+        userId: req.userID,
+      },
+    });
+
+    return res.status(200).json(Workflows);
+  } catch (error) {}
+});
+
+workflowRouter.post("/", async (req, res) => {
   try {
     const workflow = workflowBody.safeParse(req.body);
 
     if (!workflow.success) {
       console.log(workflow);
-      return res.status(400).json({ msg: "invalid workflow body" });
+      return res.status(422).json({ msg: "invalid workflow body" });
     }
 
     // const { nodes, edges }: { nodes: Nodes; edges: Edges } = workflow.data;
@@ -48,7 +56,7 @@ workflowRouter.post("/", authMiddleware, async (req, res) => {
         },
       });
     }
-    return res.status(401).json({ msg: `workflow created ${workflowRes}` });
+    return res.status(201).json(workflowRes);
   } catch (error) {}
   console.log(error);
 });
@@ -103,7 +111,7 @@ workflowRouter.delete("/:id", async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(401).json({ msg: "workflow deleted ", workflow });
+    res.status(200).json({ msg: "workflow deleted ", workflow });
   } catch (error) {}
 });
 
@@ -116,10 +124,10 @@ workflowRouter.post("/run/:id", async (req, res) => {
         id: workflowId,
       },
     });
-  
-   const data = JSON.stringify(workflow)
 
-    redisClient.lPush("workflow_q",JSON.stringify(workflow))
+    const data = JSON.stringify(workflow);
+
+    redisClient.lPush("workflow_q", JSON.stringify(workflow));
   } catch (error) {}
 });
 
