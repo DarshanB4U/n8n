@@ -48,10 +48,10 @@ enum CredentialTypes {
 
 model Webhook {
   id         String   @id @default(uuid())
-  title      String
+  // title      String
   method     String
   path       String
-  header     String
+  // header     String
   secret     String
   workflowID String
   workflow   Workflow @relation(fields: [workflowID], references: [id])

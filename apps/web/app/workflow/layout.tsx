@@ -13,7 +13,7 @@ export default function WorkflowLayout({
         <SidebarProvider>
           <AppSidebar />
           <main>
-            <SidebarTrigger className="bg-teal-900" />
+            {/* <SidebarTrigger className="bg-teal-900" /> */}
 
             <div>{children}</div>
           </main>

@@ -37,25 +37,7 @@ workflowRouter.post("/", async (req, res) => {
         edges: workflow.data.edges,
       },
     });
-    const Trigger = workflow.data.nodes[0];
-    if (Trigger?.type == TriggerNodetype.webhookTrigger) {
-      const method = workflow.data.nodes[0]?.data.Parameters.method as string;
-      const path = `/webhook/${workflowRes.id}`;
-      const secret = workflow.data.nodes[0]?.data.Parameters.secret as string;
-      const webhookTitle = workflow.data.nodes[0]?.data.Credentials
-        .secret as string;
-      const header = workflow.data.nodes[0]?.data.Parameters.header as string;
-      const webhook = prisma.webhook.create({
-        data: {
-          method,
-          path,
-          workflowID: workflowRes.id,
-          title: webhookTitle || "undefined",
-          secret: secret,
-          header: header,
-        },
-      });
-    }
+
     return res.status(201).json(workflowRes);
   } catch (error) {}
   console.log(error);
@@ -70,9 +52,12 @@ workflowRouter.put("/:id", async (req, res) => {
         msg: "fsdfds",
       });
     }
+    console.log(req.body);
     const { data, success } = workflowBody.safeParse(req.body);
+    console.log(data);
+
     if (success != true) {
-      return res.status(401).json({ msg: "invalid worflow body " });
+      return res.status(422).json({ msg: "invalid worflow body " });
     }
     const updatedWorkflow = await prisma.workflow.update({
       where: {
@@ -80,6 +65,55 @@ workflowRouter.put("/:id", async (req, res) => {
       },
       data: data,
     });
+
+    const path = `/webhook/${updatedWorkflow.id}`;
+    const webhookExisted = await prisma.webhook.findFirst({
+      where: {
+        path: path,
+      },
+    });
+    const Trigger = data.nodes[0];
+    if (Trigger?.type == TriggerNodetype.webhookTrigger) {
+      const method = data.nodes[0]?.data.Credentials.method as string;
+
+      const secret = data.nodes[0]?.data.Credentials.secret as string;
+      // const webhookTitle = data.nodes[0]?.data.Credentials.secret as string;
+      // const header = data.nodes[0]?.data.Parameters.header as string;
+
+      if (webhookExisted) {
+        const WF = await prisma.webhook.update({
+          where: {
+            id: webhookExisted.id,
+          },
+          data: {
+            // title: webhookTitle,
+            path,
+            method,
+            secret,
+            // header,
+          },
+        });
+        console.log(WF);
+      } else {
+        const webhook = await prisma.webhook.create({
+          data: {
+            method,
+            path,
+            workflowID: updatedWorkflow.id,
+            // title: webhookTitle || "undefined",
+            secret: secret,
+            // header: header,
+          },
+        });
+        console.log(webhook);
+      }
+    }
+
+    if (webhookExisted) {
+      const deletedWebhook = await prisma.webhook.delete({
+        where: { id: webhookExisted.id },
+      });
+    }
 
     console.log(`updated the workflow ${updatedWorkflow.id}`);
 
@@ -98,7 +132,7 @@ workflowRouter.get("/:id", async (req, res) => {
       },
     });
 
-    res.status(400).json({ workflow });
+    res.status(200).json({ workflow });
   } catch (error) {
     console.log("error while getting the workflow ", error);
   }

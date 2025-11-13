@@ -220,7 +220,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
             {node?.parameters?.map((parameter) => {
               return (
-                <div className="grid gap-3" id={parameter.name}>
+                <div className="grid gap-3" key={parameter.name}>
                   <Label>{parameter.displayName}</Label>
                   <Input
                     required={parameter.required}

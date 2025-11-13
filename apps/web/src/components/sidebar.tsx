@@ -10,22 +10,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
-// Menu items.
+
 const items = [
-  {
-    title: "Home",
-    url: "",
-    icon: Home,
-  },
+  // {
+  //   title: "Home",
+  //   url: "",
+  //   icon: Home,
+  // },
   {
     title: "Workflows",
-    url: "#",
+    url: "/workflow",
     icon: Inbox,
   },
   {
     title: "Credentials",
-    url: "#",
+    url: "/workflow/credentials",
     icon: BookLock,
   },
   {
@@ -40,16 +41,14 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <div className=" flex-clos items-center p-1 rounded-2xl">
-           
-          </div>
+          <div className=" flex-clos items-center p-1 rounded-2xl"></div>
 
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem className="pt-2 pb-2" key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a
+                    <Link
                       href={item.url}
                       className="flex items-center gap-3 px-4 py-2.5 
                  rounded-xl transition-all duration-200
@@ -62,7 +61,7 @@ export function AppSidebar() {
                       <span className="text-base  font-medium tracking-wide">
                         {item.title}
                       </span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

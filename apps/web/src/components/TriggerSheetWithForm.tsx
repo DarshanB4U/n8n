@@ -17,11 +17,15 @@ import { nanoid } from "nanoid";
 import { TriggerNodetype } from "@repo/types/zodSchema";
 
 type TriggerType = "Trigger_Manual" | "Trigger_Webhook";
+type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
 
-export function TriggerSheetWithForm() {
+export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<TriggerType | null>(null);
   const context = useContext(workflowContext);
+  const [copied, setCopied] = useState(false);
+  const [method, setMethod] = useState<HttpMethod>("GET");
+  const [webhookSecret, SetWebhookSecret] = useState<string>("");
   if (!context) {
     console.log("WorkflowContext error");
     return;
@@ -49,6 +53,14 @@ export function TriggerSheetWithForm() {
         dragging: false,
       },
     ]);
+  };
+
+  const webhookUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/${WorkflowId}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(webhookUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -138,24 +150,42 @@ export function TriggerSheetWithForm() {
 
           {selected === TriggerNodetype.webhookTrigger && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">
-                  Endpoint URL
-                </label>
+              <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="https://your-webhook-url"
-                  className="mt-1 block w-full border rounded px-2 py-1"
+                  value={webhookUrl}
+                  readOnly
+                  className="w-full border rounded px-2 py-1 bg-slate-950 cursor-copy"
                 />
+
+                <button
+                  onClick={copyToClipboard}
+                  className="flex items-center gap-1 px-3 py-1 border rounded bg-gray-950 hover:bg-gray-300 transition"
+                >
+                  {/* <Copy size={16} /> */}
+                  {copied ? "Copied!" : "Copy"}
+                </button>
               </div>
+
               <div>
                 <label className="block text-sm font-medium">Method</label>
-                <select className="mt-1 block w-full border rounded px-2 py-1">
+                <select
+                  className="mt-1 block w-full border  bg-slate-950 rounded px-2 py-1"
+                  onChange={(e) => setMethod(e.target.value as HttpMethod)}
+                >
                   <option>GET</option>
                   <option>POST</option>
                   <option>DELETE</option>
-                  <option>UPDATE</option>
+                  <option>PUT</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Secret</label>
+                <input
+                  type="text"
+                  className="w-full border rounded px-2 py-1 bg-slate-950 cursor-copy"
+                  onChange={(e) => SetWebhookSecret(e.target.value)}
+                />
               </div>
 
               <div className="flex justify-end gap-2">
@@ -165,7 +195,27 @@ export function TriggerSheetWithForm() {
                 <Button
                   onClick={() => {
                     console.log("webhook config submitted");
-                    AddTriggertNode(TriggerNodetype.webhookTrigger);
+                    // AddTriggertNode(TriggerNodetype.webhookTrigger);
+                    const id = nanoid(5);
+                    setNodes([
+                      {
+                        id: id,
+                        type: TriggerNodetype.webhookTrigger,
+                        position: { x: -200, y: 200 },
+                        data: {
+                          nodeRegid: 9,
+                          Parameters: {},
+                          Credentials: {
+                            method: method,
+                            secret: webhookSecret,
+                          },
+                          outPut: {},
+                        },
+                        measured: {},
+                        selected: false,
+                        dragging: false,
+                      },
+                    ]);
                     setOpen(false);
                   }}
                 >
