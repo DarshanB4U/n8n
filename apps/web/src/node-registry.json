@@ -6,8 +6,15 @@
     "IconColor": "green-600",
     "Category": "Action",
     "Description": "Send email Using Nodemailer",
-    "Credentials": [{ "name": "smtp", "required": true }],
+    "Credentials": [{ "name": "emailCred", "required": true }],
     "parameters": [
+      {
+        "displayName": "From",
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "description": "Recipient email address"
+      },
       {
         "displayName": "To",
         "name": "to",
@@ -38,15 +45,12 @@
     "IconColor": "blue-600",
     "Category": "Action",
     "Description": "Send Message using Telegram",
-    "Credentials": [
-      { "name": "AuthToken", "required": true },
-      { "name": "Api-Key", "required": true }
-    ],
+    "Credentials": [{ "name": "TelegramToken", "required": true }],
 
     "parameters": [
       {
         "displayName": "To",
-        "name": "to",
+        "name": "chat_id",
         "type": "number",
         "required": true,
         "description": "Recipient Telegram No"
@@ -54,7 +58,7 @@
 
       {
         "displayName": "Message",
-        "name": "messageBody",
+        "name": "text",
         "type": "string",
         "required": true,
         "description": "Enter Message You want to send "

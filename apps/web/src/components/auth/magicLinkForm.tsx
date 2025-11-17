@@ -82,7 +82,7 @@ export default function MagicLinkForm({
   );
 
   return (
-    <div>
+    <div >
       {isAuthenticated ? (
         <div className="flex items-center justify-center min-h-[60vh] ">
           <Card className="p-6 border border-[#f0d6b4] rounded-xl text-center  shadow-sm">
