@@ -5,9 +5,9 @@ const redisClient: RedisClientType = createClient();
 (async () => {
   try {
     await redisClient.connect();
-    console.log("bacnked redis connected");
+    console.log("redis connected to worker ");
   } catch (error) {
-    console.log("error while connecting redis in backend ");
+    console.log("error while connecting redis to workfwr  ");
   }
 })();
 

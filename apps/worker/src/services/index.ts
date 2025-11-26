@@ -1,44 +1,56 @@
 import nodemailer from "nodemailer";
 
-export const sendMail = async (
+export async function sendMail(
   emailCred: string,
   from: string,
   to: string,
   body: string,
   subject: string
-) => {
-  console.log("user:", from.trim());
-  console.log("pass length:", emailCred.length);
-  console.log(emailCred, from, to);
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: from,
-      pass: emailCred,
-    },
-  });
+) {
+  try {
+    console.log("user:", from.trim(), from.length);
+    console.log("pass length:", emailCred.length);
+    console.log(emailCred, from, to);
 
-  transporter
-    .verify()
-    .then(() => console.log("gmail Service is ready  "))
-    .catch((err) => {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      pool: true,
+
+      auth: {
+        user: from,
+        pass: emailCred,
+      },
+    });
+
+    try {
+      await transporter.verify();
+
+      const info = await transporter.sendMail({
+        from: from,
+        to: to,
+        subject: subject,
+        text: body,
+      });
+
+      console.log(info);
+      transporter.close();
+      return;
+    } catch (err: any) {
       console.error(
         "Mailer verify failed:",
         err && err.response ? err.response : err.message || err
       );
-    });
+    }
+  } catch (error) {
+    console.log("---------------------email-error--------------------");
+    console.log(error);
+    return;
+  }
+}
 
-  const info = await transporter.sendMail({
-    from: from,
-    to: to,
-    subject: subject,
-    text: body,
-  });
-
-  console.log(info);
-};
-
-export const SendTG = async function (
+export async function SendTG(
   TelegramToken: string,
   chat_id: string | number,
   text: string
@@ -64,4 +76,4 @@ export const SendTG = async function (
     console.log("---------------------telegram-error--------------------");
     console.log(error);
   }
-};
+}

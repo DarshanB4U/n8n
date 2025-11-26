@@ -5,7 +5,7 @@ const redisClient: RedisClientType = createClient();
 (async () => {
   try {
     await redisClient.connect();
-    console.log("bacnked redis connected");
+    console.log("redis connected to backend");
   } catch (error) {
     console.log("error while connecting redis in backend ");
   }

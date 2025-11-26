@@ -84,8 +84,9 @@ authRouter.get("/signin/post", async (req, res) => {
         sameSite: "lax", // good default for most apps
         path: "/", // cookie available to whole domain
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
-      })
-      .json({ msg: "verfied" });
+      }).redirect("http://localhost:3000/auth/signin")
+    
+     
   } catch (error) {
     console.log(error);
 
@@ -120,10 +121,7 @@ authRouter.post("/me", async (req, res) => {
   }
 });
 
-
-
 authRouter.post("/logout", async (req, res) => {
   const token = req.cookies.authToken as myPayload;
-
 });
 export { authRouter };
