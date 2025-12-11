@@ -3,6 +3,7 @@ import { workflowBody, TriggerNodetype } from "@repo/types/zodSchema";
 import { Router } from "express";
 import { error } from "node:console";
 import { redisClient } from "../redis/myredis";
+import { createOrUpdateFormForWorkflow } from "../controllers";
 
 const workflowRouter: Router = Router();
 
@@ -49,36 +50,80 @@ workflowRouter.put("/:id", async (req, res) => {
 
     if (!workflowId) {
       return res.status(401).json({
-        msg: "fsdfds",
+        msg: "nok worfkolow id exiet ",
       });
     }
-    console.log(req.body);
-    const { data, success } = workflowBody.safeParse(req.body);
-    console.log(data);
+    console.log(req.body.nodes.data);
 
-    if (success != true) {
+    // const result = workflowBody.safeParse(req.body);
+    // if (!result.success) {
+    //   console.log(result.error.issues); // shows exactly which field failed
+    // } else {
+    //   console.log("ok", result.data);
+    // }
+    const { data, success } = workflowBody.safeParse(req.body);
+
+    // console.log("this is parsed data", data);
+
+    if (success !== true) {
       return res.status(422).json({ msg: "invalid worflow body " });
     }
+
     const updatedWorkflow = await prisma.workflow.update({
       where: {
         id: workflowId,
+        userId: req.userID,
       },
       data: data,
     });
 
-    const path = `/webhook/${updatedWorkflow.id}`;
-    const webhookExisted = await prisma.webhook.findFirst({
-      where: {
-        path: path,
-      },
-    });
-    const Trigger = data.nodes[0];
-    if (Trigger?.type == TriggerNodetype.webhookTrigger) {
+    console.log("updated ", updatedWorkflow);
+
+    const Trigger = data.nodes.filter(
+      (node) =>
+        (node.type === TriggerNodetype.From) || TriggerNodetype.webhookTrigger
+    );
+
+    console.log("----------->trigger", Trigger);
+
+    if (Trigger[0]?.type == TriggerNodetype.From) {
+      const fields = data.nodes[0]?.data.Form;
+      if (!fields) {
+        return res.status(400).json({ msg: "no form fields existed " });
+      }
+
+      const form = await createOrUpdateFormForWorkflow(workflowId, fields);
+
+      // const form = await prisma.form.create({
+      //   data: {
+      //     title: data.title as string,
+      //     workflowId: req.params.id,
+      //     FormData: fields,
+      //   },
+      // });
+      console.log("form created ", form);
+    } else {
+      try {
+        console.log("form deleted workflow Id", workflowId);
+      } catch (error) {
+        console.log("no form exist to delete ");
+      }
+    }
+
+    if (Trigger[0]?.type === TriggerNodetype.webhookTrigger) {
       const method = data.nodes[0]?.data.Credentials.method as string;
 
       const secret = data.nodes[0]?.data.Credentials.secret as string;
       // const webhookTitle = data.nodes[0]?.data.Credentials.secret as string;
       // const header = data.nodes[0]?.data.Parameters.header as string;
+
+      const path = `/webhook/${updatedWorkflow.id}`;
+      const webhookExisted = await prisma.webhook.findFirst({
+        where: {
+          path: path,
+          workflowID: req.params.id,
+        },
+      });
 
       if (webhookExisted) {
         const WF = await prisma.webhook.update({
@@ -107,13 +152,30 @@ workflowRouter.put("/:id", async (req, res) => {
         });
         console.log(webhook);
       }
+    } else {
+      const path = `/webhook/${updatedWorkflow.id}`;
+      const webhookExisted = await prisma.webhook.findFirst({
+        where: {
+          path: path,
+          workflowID: req.params.id,
+        },
+      });
+      if (webhookExisted) {
+        const deletedWebhook = await prisma.webhook.delete({
+          where: { id: webhookExisted.id },
+        });
+        console.log(
+          "Deleted webhook because trigger is not webhook:",
+          deletedWebhook
+        );
+      }
     }
 
-    if (webhookExisted) {
-      const deletedWebhook = await prisma.webhook.delete({
-        where: { id: webhookExisted.id },
-      });
-    }
+    // if (webhookExisted) {
+    //     const deletedWebhook = await prisma.webhook.delete({
+    //       where: { id: webhookExisted.id },
+    //     });
+    //   }
 
     console.log(`updated the workflow ${updatedWorkflow.id}`);
 

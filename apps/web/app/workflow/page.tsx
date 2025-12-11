@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, TableProperties } from "lucide-react";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { useCallback, useEffect, useState } from "react";
 import api from "@/lib/api";
@@ -28,16 +28,6 @@ type workflow = {
   description?: string;
   enabled: boolean;
 };
-
-// const mockWorkflows: workflow[] = [
-//   {
-//     id: "1",
-//     title: "Welcome Email Funnel",
-//     description: "Sends a welcome email + Telegram ping on signup.",
-//     isActive: false,
-//     enabled: false,
-//   },
-// ];
 
 export default function WorkflowPage() {
   const [workflows, SetWorkflows] = useState<workflow[]>([]);
@@ -62,6 +52,9 @@ export default function WorkflowPage() {
     toast.success(`Deleted ${res.data.workflow.title}`);
     fetchWorkflows();
   }
+  async function handleExeClick(id: string) {
+    router.push(`/workflow/executions/${id}`);
+  }
 
   async function handleCreateWorkflow() {
     setLoading(true);
@@ -70,6 +63,7 @@ export default function WorkflowPage() {
       nodes: [],
       edges: [],
     };
+
     try {
       const workflowRes = await api.post("/workflow/", Data);
 
@@ -166,6 +160,14 @@ export default function WorkflowPage() {
                     >
                       <Trash2 className="mr-1.5 h-4 w-4" />
                       Delete
+                    </Button>
+                    <Button
+                      onClick={() => handleExeClick(wf.id)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <TableProperties className="mr-1.5 h-4 w-4" />
+                      Executions
                     </Button>
                   </div>
                 </CardFooter>

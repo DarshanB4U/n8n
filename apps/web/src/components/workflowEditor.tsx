@@ -19,6 +19,8 @@ import { workflowContext } from "@/context/workflowContext";
 import { INode } from "@repo/types/zodSchema";
 
 import { WebhookNode } from "./nodes/WebhookNode";
+import { fromTrigger } from "./nodes/formBuilderTrigger";
+
 import { ManualTrigger } from "@/components/nodes/ManualClickNode";
 import { CostomAction } from "./nodes/CostomActionNode";
 import MyActionSheet from "./MyActionSheet";
@@ -76,7 +78,6 @@ export default function workflowEditor({ workflowId }: { workflowId: string }) {
     []
   );
   // onNodesChange()  use this for save on change
- 
 
   const nodeTypes = {
     initial_node: () => (
@@ -85,6 +86,7 @@ export default function workflowEditor({ workflowId }: { workflowId: string }) {
     Trigger_Webhook: WebhookNode,
     Trigger_Manual: ManualTrigger,
     Action: CostomAction,
+    Trigger_Form: fromTrigger,
   };
 
   const handleSaveClick = async () => {

@@ -17,6 +17,8 @@ import { authRouter } from "./routes/authRoute";
 import { credentialRouter } from "./routes/credentialRoute";
 import { workflowRouter } from "./routes/workflowRoute";
 import { redisClient } from "./redis/myredis";
+import { executionRouter } from "./routes/executionRoute";
+import { formRouter } from "./routes/formRoute";
 
 const PORT = 8000;
 
@@ -44,8 +46,8 @@ app.all("/api/v0/webhook/:workflowId", async (req, res) => {
     }
 
     const data = JSON.stringify({
-      workflowid: {
-        value: req.params.workflowId,
+      workflow: {
+        id: req.params.workflowId,
       },
     });
 
@@ -73,6 +75,8 @@ app.use(cors(corsOptions));
 app.use("/api/v0/auth", authRouter);
 app.use("/api/v0/credential", credentialRouter);
 app.use("/api/v0/workflow", authMiddleware, workflowRouter);
+app.use("/api/v0/execution", authMiddleware, executionRouter);
+app.use("/api/v0/form", formRouter);
 
 app.listen(PORT, () => {
   console.log("app is listning on port :", PORT);

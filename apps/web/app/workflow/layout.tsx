@@ -12,10 +12,11 @@ export default function WorkflowLayout({
       <CredentialProvider>
         <SidebarProvider>
           <AppSidebar />
-          <main>
-            {/* <SidebarTrigger className="bg-teal-900" /> */}
-
-            <div>{children}</div>
+          <main className=" ">
+            <div className="">
+              {/* <SidebarTrigger className="bg-teal-900" /> */}
+              {children}
+            </div>
           </main>
 
           <Toaster />

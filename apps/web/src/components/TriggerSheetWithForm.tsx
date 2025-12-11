@@ -10,13 +10,13 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { MousePointerClick, Webhook } from "lucide-react";
+import { MousePointerClick, StickyNote, Webhook } from "lucide-react";
 import { workflowContext } from "@/context/workflowContext";
 
 import { nanoid } from "nanoid";
 import { TriggerNodetype } from "@repo/types/zodSchema";
 
-type TriggerType = "Trigger_Manual" | "Trigger_Webhook";
+type TriggerType = "Trigger_Manual" | "Trigger_Webhook" | "Trigger_Form";
 type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
 
 export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
@@ -105,6 +105,13 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
               >
                 <Webhook className="w-5 h-5 text-green-600" />
                 <span>Webhook Trigger</span>
+              </button>
+              <button
+                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-green-50"
+                onClick={() => AddTriggertNode(TriggerNodetype.From)}
+              >
+                <StickyNote className="w-5 h-5 text-green-600" />
+                <span>Form</span>
               </button>
             </div>
           )}

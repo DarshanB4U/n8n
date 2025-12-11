@@ -1,7 +1,6 @@
 import { WorkflowProivider } from "@/context/workflowContext";
 
 import WorkflowEditor from "@/components/workflowEditor";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 // import { WorkflowProivider } from "@/context/workflowContext";
 interface WorkflowPageProps {

@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import {
   ActionNodetype,
+  Executions,
   IEdge,
   INode,
   TriggerNodetype,
@@ -20,6 +21,7 @@ import { workerData } from "worker_threads";
 interface WorkflowContext extends Workflow {
   nodes: INode[];
   edges: IEdge[];
+
   title: string;
   description: string;
   enabled: boolean;
@@ -30,6 +32,7 @@ interface WorkflowContext extends Workflow {
   // removeEdge: (edge: string) => void;
 
   actionSheetOpen: boolean;
+
   SetActionSheetOpen: React.Dispatch<SetStateAction<boolean>>;
   setNodes: React.Dispatch<React.SetStateAction<INode[]>>;
   setEdges: React.Dispatch<React.SetStateAction<IEdge[]>>;
@@ -39,6 +42,7 @@ interface WorkflowContext extends Workflow {
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   fetchWorkflow: (id: string) => Promise<React.JSX.Element | undefined>;
+  // setExecutions: React.Dispatch<React.SetStateAction<Executions >>;
 }
 
 export const workflowContext = createContext<WorkflowContext | undefined>(
@@ -55,15 +59,19 @@ export const WorkflowProivider = ({
   const [description, setDescription] = useState<string>(" ");
   const [isActive, setIsActive] = useState<boolean>(false);
   const [enabled, setEnabled] = useState(false);
-  
-  
 
   const [nodes, setNodes, onNodesChange] = useNodesState<INode>([
     {
       id: "0-initial",
-      type: TriggerNodetype.initialNode,
+      type: TriggerNodetype.From,
       position: { x: -136, y: 200 },
-      data: { nodeRegid: 1, Parameters: {}, Credentials: {}, outPut: {} },
+      data: {
+        nodeRegid: 1,
+        Parameters: {},
+        Credentials: {},
+        outPut: {},
+        Form: [],
+      },
       measured: {},
       selected: false,
       dragging: false,
@@ -73,6 +81,7 @@ export const WorkflowProivider = ({
   const fetchWorkflow = useCallback(async (id: string) => {
     const res = await api.get(`/workflow/${id}`);
     const workflow: Workflow = res.data.workflow;
+
     if (!workflow) {
       return <div>unable to fetch workflow data </div>;
     }
@@ -90,7 +99,13 @@ export const WorkflowProivider = ({
           id: "0-initial",
           type: TriggerNodetype.initialNode,
           position: { x: -136, y: 200 },
-          data: { nodeRegid: 1, Parameters: {}, Credentials: {}, outPut: {} },
+          data: {
+            nodeRegid: 1,
+            Parameters: {},
+            Credentials: {},
+            outPut: {},
+            Form: [],
+          },
           measured: {},
           selected: false,
           dragging: false,

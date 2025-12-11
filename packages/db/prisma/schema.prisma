@@ -33,9 +33,11 @@ model Workflow {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  userId  String
-  user    User      @relation(fields: [userId], references: [id])
-  webhook Webhook[]
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  webhook   Webhook[]
+  form      Form[]
+  execution Execution[]
 
   @@index([userId])
 }
@@ -45,6 +47,22 @@ enum CredentialTypes {
   OpenAi
   EMAIL
 }
+
+enum WorkflowStatus {
+  running
+  success
+  failed
+  stopped
+  pending
+}
+
+// enum NodeExecutionStatus {
+//   running
+//   success
+//   failed
+//   stopped
+//   pending
+// }
 
 model Webhook {
   id         String   @id @default(uuid())
@@ -66,4 +84,47 @@ model Credentials {
   updatedAt      DateTime        @updatedAt
   userId         String
   user           User            @relation(fields: [userId], references: [id])
+}
+
+model Execution {
+  id            String         @id @default(uuid())
+  status        WorkflowStatus @default(stopped)
+  nodeOutput    Json[]
+  WokflowID     String
+  Workflow      Workflow       @relation(fields: [WokflowID], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  nodeId        String
+
+  @@index([WokflowID])
+  @@index([status])
+}
+
+// model NodeExecution {
+//   id          String              @id @default(cuid())
+//   executionId String
+//   execution   Execution           @relation(fields: [executionId], references: [id])
+//   nodeId      String
+//   status      NodeExecutionStatus @default(pending)
+//   input       Json? // what the node received (items array or json)
+//   output      Json? // output produced by node
+//   error       String? // small error summary
+//   attempt     Int                 @default(0)
+//   startedAt   DateTime?
+//   finishedAt  DateTime?
+//   createdAt   DateTime            @default(now())
+
+//   @@unique([executionId, nodeId]) // ensures one node execution record per execution+node
+//   @@index([executionId])
+//   @@index([nodeId])
+// }
+
+model Form {
+  id         String   @id @default(uuid())
+  title      String
+  FormData   Json[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  workflowId String   @unique
+  Workflow   Workflow @relation(fields: [workflowId], references: [id])
 }

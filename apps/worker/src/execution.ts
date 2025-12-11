@@ -1,9 +1,7 @@
 import { prisma } from "@repo/db";
-import { INode, INodeData, TriggerNodetype } from "@repo/types/zodSchema";
+import { INode, TriggerNodetype } from "@repo/types/zodSchema";
 import { sendMail, SendTG } from "./services";
 import { getCredById } from "./controllers/dbControllers";
-import SendmailTransport from "nodemailer/lib/sendmail-transport";
-import { send } from "process";
 
 interface edges {
   id: string;
@@ -14,12 +12,23 @@ type Wf = Array<INode>;
 
 function getTriggerId(nodes: Wf) {
   for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i]?.type === "Trigger_Webhook" || TriggerNodetype.manualTrigger) {
-      return nodes[i]?.id;
+    if (
+      nodes[i]?.type === TriggerNodetype.webhookTrigger ||
+      TriggerNodetype.manualTrigger ||
+      TriggerNodetype.From
+    ) {
+      return nodes[i];
     }
   }
 }
 
+type formExecutionData = Record<string, string>;
+
+function replaceTemplate(str: string, form: formExecutionData) {
+  return str.replace(/\{\{\s*form\.([^\}]+)\s*\}\}/g, (match, key) => {
+    return form[key] || "";
+  });
+}
 const CreateAdjecencyList = (edges: edges[]) => {
   const graph = new Map<string, Set<string>>();
 
@@ -70,7 +79,10 @@ class Queue<T = any> {
   }
 }
 
-export const execute = async (workflowId: string) => {
+export const RunWorkflow = async (
+  workflowId: string,
+  formExecutionID?: string
+) => {
   const q = new Queue();
 
   //fetch workflow from db
@@ -92,11 +104,27 @@ export const execute = async (workflowId: string) => {
 
   // create adjcency list form workflow edges
   const adjcencyList = CreateAdjecencyList(edges);
-
+  let executionForm;
   //find the terigger node
-  const TriggerId = getTriggerId(nodes);
 
-  q.push(TriggerId);
+  const Trigger = getTriggerId(nodes);
+
+  if (Trigger?.type == TriggerNodetype.From) {
+    if (!formExecutionID) {
+      return console.log("formExecutionID not provided");
+    }
+    const execution = await prisma.execution.findFirst({
+      where: {
+        WokflowID: workflowId,
+        id: formExecutionID,
+      },
+    });
+    executionForm = execution;
+  }
+
+  const formExecution = executionForm?.nodeOutput[0] as formExecutionData;
+  console.log("form output --------------", formExecution);
+  q.push(Trigger?.id);
 
   while (true) {
     if (q.isEmpty()) {
@@ -118,32 +146,43 @@ export const execute = async (workflowId: string) => {
       const node = nodesMap.get(item);
 
       console.log(node?.id, "executed");
-      if (node?.data.nodeRegid == 1) {
-        const emailCred = await getCredById(
-          node.data.Credentials?.CredentialId as string
-        );
-        console.log("email credentials logs ", emailCred);
-        await sendMail(
-          emailCred as string,
-          node.data.Parameters.from as string,
-          node.data.Parameters.to as string,
-          node.data.Parameters.body as string,
-          node.data.Parameters.subject as string
-        );
-      }
-      if (node?.data.nodeRegid == 2) {
-        const TelegramToken = await getCredById(
-          node.data.Credentials.CredentialId as string
-        );
+      try {
+        if (node?.data.nodeRegid == 1) {
+          const emailCred = await getCredById(
+            node.data.Credentials?.CredentialId as string
+          );
 
-        await SendTG(
-          TelegramToken as string,
-          node.data.Parameters.chat_id as string | number,
-          node.data.Parameters.text as string
-        );
-      }
+          console.log("email credentials logs ", emailCred);
+          await sendMail(
+            emailCred as string,
+            replaceTemplate(node.data.Parameters.from as string, formExecution),
+            replaceTemplate(node.data.Parameters.to as string, formExecution),
+            replaceTemplate(node.data.Parameters.body as string, formExecution),
+            replaceTemplate(
+              node.data.Parameters.subject as string,
+              formExecution
+            )
+          );
+        }
+        if (node?.data.nodeRegid == 2) {
+          const TelegramToken = await getCredById(
+            node.data.Credentials.CredentialId as string
+          );
 
-      q.push(item);
+          await SendTG(
+            TelegramToken as string,
+            replaceTemplate(
+              node.data.Parameters.chat_id as string,
+              formExecution
+            ),
+            replaceTemplate(node.data.Parameters.text as string, formExecution)
+          );
+        }
+
+        q.push(item);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 

@@ -35,6 +35,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
     Parameters: Record<string, string>;
     Credentials: Record<string, string>;
   }
+
   const context = useContext(workflowContext);
   if (!context) {
     return (
@@ -53,6 +54,8 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
   const IconComponent = Icons[metaNode[0]?.icon as keyof typeof Icons.icons];
 
   const { setNodes, nodes } = context;
+  const formNode = nodes.find((n) => n.type === "Trigger_Form");
+  const formFields = formNode?.data.Form || [];
   // function handle() {
   //   setNodes((prev) =>
   //     prev.map((node) => {
@@ -220,15 +223,44 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
             {node?.parameters?.map((parameter) => {
               return (
-                <div className="grid gap-3" key={parameter.name}>
-                  <Label>{parameter.displayName}</Label>
-                  <Input
-                    required={parameter.required}
-                    placeholder={`${parameter.description}`}
-                    value={`${formValues.Parameters[parameter.name] || " "}`}
-                    onChange={(e) => handleParamInputChange(e, parameter.name)}
-                    type={`${parameter.type}`}
-                  />
+                <div>
+                  <div className="grid gap-3" key={parameter.name}>
+                    <Label>{parameter.displayName}</Label>
+                    <Input
+                      required={parameter.required}
+                      placeholder={`${parameter.description}`}
+                      value={`${formValues.Parameters[parameter.name] || " "}`}
+                      onChange={(e) =>
+                        handleParamInputChange(e, parameter.name)
+                      }
+                      type={`${parameter.type}`}
+                    />
+                  </div>
+                  {formFields.length > 0 && (
+                    <Select
+                      onValueChange={(value) =>
+                        setFormValues((prev) => ({
+                          ...prev,
+                          Parameters: {
+                            ...prev.Parameters,
+                            [parameter.name]: `{{form.${value}}}`,
+                          },
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Form Data" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        {formFields.map((ff) => (
+                          <SelectItem key={ff.title} value={ff.id}>
+                            {ff.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               );
             })}
