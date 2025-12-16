@@ -10,10 +10,10 @@ interface WorkflowPageProps {
 export default function SingleWorkflowPage({ params }: WorkflowPageProps) {
   const id = params.id;
   return (
-    <div>
-      <WorkflowProivider>
+    <div className="overflow-hidden">
+      <WorkflowProivider >
         {/* <SidebarTrigger className="bg-teal-900" /> */}
-        <div className="flex-col">
+        <div className="flex-col overflow-hidden">
           <WorkflowEditor workflowId={id}></WorkflowEditor>
         </div>
         {/* Render workflow editor here */}

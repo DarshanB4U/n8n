@@ -36,14 +36,19 @@ export default function MyActionSheet() {
         id: nanoid(5),
         type: "Action",
         position: { x: Math.random() * 200, y: Math.random() * 200 },
-        data: { nodeRegid: regId, Parameters: {}, Credentials: {}, outPut: {} },
+        data: {
+          nodeRegid: regId,
+          Parameters: {},
+          Credentials: {},
+          outPut: {},
+          Form: [],
+        },
         measured: {},
         selected: false,
         dragging: false,
       },
     ]);
     toast.success("New Action Added");
-    
   };
 
   // const [selected, setSelected] = useState<ActionType | null>(null);
@@ -68,7 +73,7 @@ export default function MyActionSheet() {
             </div>
           </div>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="bg-[#14161a]">
           <SheetHeader>
             <SheetTitle>Select an Action</SheetTitle>
           </SheetHeader>

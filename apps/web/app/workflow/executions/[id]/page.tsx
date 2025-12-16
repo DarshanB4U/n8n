@@ -12,7 +12,7 @@ export default function SingleWorkflowPage({ params }: WorkflowPageProps) {
   const id = params.id;
   return (
     <WorkflowProivider>
-      <div className="flex flec-col w-[calc(100vw-272px)] overflow-hidden    p-2 ">
+      <div className="flex flec-col w-[calc(100vw-272px)] overflow-hidden     p-2 ">
         <div className="flex-col   justify-items-center m-2 ">
           <header className="sticky top-0 z-10 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b flex justify-start w-full ">
             <div

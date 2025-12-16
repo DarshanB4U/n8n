@@ -8,16 +8,15 @@ export default function WorkflowLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="bg-[#12151b]  overflow-hidden">
       <CredentialProvider>
         <SidebarProvider>
           <AppSidebar />
-          <main className=" ">
-            <div className="">
-              {/* <SidebarTrigger className="bg-teal-900" /> */}
-              {children}
-            </div>
-          </main>
+
+          <div className="p-2 overflow-hidden">
+            {children}
+            {/* <SidebarTrigger className="bg-teal-900" /> */}
+          </div>
 
           <Toaster />
         </SidebarProvider>

@@ -26,7 +26,7 @@ export default function CredentialPage() {
 
   return (
     <div
-      className={`min-h-screen flex items-start bg-neutral-950 text-foreground overflow-auto py-12 px-6 ${
+      className={`min-h-screen flex items-startbg-linear-to-t from-[#17181f] to-[#202329] text-foreground overflow-auto py-12 px-6 ${
         open ? "w-[calc(100vw-272px)]" : "w-screen"
       }`}
     >
@@ -43,7 +43,7 @@ export default function CredentialPage() {
           </div>
 
           {/* NOTE: Create button removed */}
-          <CredCreate ></CredCreate>
+          <CredCreate></CredCreate>
         </div>
 
         {/* grid centered cards */}
@@ -56,7 +56,7 @@ export default function CredentialPage() {
                 <DialogTrigger asChild>
                   <button
                     type="button"
-                    className="w-full max-w-[20rem] text-left rounded-2xl p-4 bg-neutral-900/60
+                    className="w-full max-w-[20rem] text-left rounded-2xl p-4  bg-linear-to-t from-[#17181f] to-[#202329]
                                border border-neutral-800 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-150
                                outline-none focus:ring-2 focus:ring-neutral-600/40"
                   >
@@ -71,7 +71,7 @@ export default function CredentialPage() {
                       </div>
 
                       <div className="ml-3 flex-shrink-0">
-                        <div className="h-8 w-8 rounded-lg bg-neutral-800 flex items-center justify-center text-neutral-200 font-semibold">
+                        <div className="h-8 w-8 rounded-lg bg-[#EAE0CF] flex items-center text-shadow-2xs justify-center text-black shadow-2xl font-semibold">
                           {c.title
                             ?.split(" ")
                             .map((s: string) => s[0])
@@ -106,7 +106,7 @@ export default function CredentialPage() {
                   </button>
                 </DialogTrigger>
 
-                <DialogContent className="max-w-md w-full rounded-2xl bg-neutral-900 border border-neutral-800 p-6 shadow-lg">
+                <DialogContent className="max-w-md w-full rounded-2xl bg-[#0F0E0E] border border-neutral-800 p-6 shadow-lg">
                   <DialogHeader>
                     <DialogTitle className="text-neutral-100">
                       {c.title}

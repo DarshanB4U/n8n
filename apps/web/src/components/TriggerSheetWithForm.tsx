@@ -47,7 +47,13 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
         id: id,
         type: TriggerType,
         position: { x: -200, y: 200 },
-        data: { nodeRegid: 9, Parameters: {}, Credentials: {}, outPut: {} },
+        data: {
+          nodeRegid: 9,
+          Parameters: {},
+          Credentials: {},
+          outPut: {},
+          Form: [],
+        },
         measured: {},
         selected: false,
         dragging: false,
@@ -81,7 +87,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
         </div>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-full sm:w-[400px]">
+      <SheetContent side="right" className="w-full sm:w-[400px] bg-[#14161a]">
         <SheetHeader className="mb-4">
           <SheetTitle>
             {selected ? `Configure ${selected}` : "Select a Trigger"}
@@ -92,7 +98,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
           {!selected && (
             <div className="space-y-3">
               <button
-                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-blue-50"
+                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-slate-500"
                 onClick={() => setSelected(TriggerNodetype.manualTrigger)}
               >
                 <MousePointerClick className="w-5 h-5 text-blue-600" />
@@ -100,14 +106,14 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
               </button>
 
               <button
-                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-green-50"
+                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-slate-500"
                 onClick={() => setSelected(TriggerNodetype.webhookTrigger)}
               >
                 <Webhook className="w-5 h-5 text-green-600" />
                 <span>Webhook Trigger</span>
               </button>
               <button
-                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-green-50"
+                className="w-full flex items-center gap-3 p-3 border rounded hover:bg-slate-500"
                 onClick={() => AddTriggertNode(TriggerNodetype.From)}
               >
                 <StickyNote className="w-5 h-5 text-green-600" />
@@ -162,7 +168,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
                   type="text"
                   value={webhookUrl}
                   readOnly
-                  className="w-full border rounded px-2 py-1 bg-slate-950 cursor-copy"
+                  className="w-full border rounded px-2 py-1 bg-[#172433] cursor-copy"
                 />
 
                 <button
@@ -177,7 +183,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
               <div>
                 <label className="block text-sm font-medium">Method</label>
                 <select
-                  className="mt-1 block w-full border  bg-slate-950 rounded px-2 py-1"
+                  className="mt-1 block w-full border  bg-[#172433] rounded px-2 py-1"
                   onChange={(e) => setMethod(e.target.value as HttpMethod)}
                 >
                   <option>GET</option>
@@ -190,7 +196,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
                 <label className="block text-sm font-medium">Secret</label>
                 <input
                   type="text"
-                  className="w-full border rounded px-2 py-1 bg-slate-950 cursor-copy"
+                  className="w-full border rounded px-2 py-1 bg-[#172433] cursor-copy"
                   onChange={(e) => SetWebhookSecret(e.target.value)}
                 />
               </div>
@@ -217,6 +223,7 @@ export function TriggerSheetWithForm({ WorkflowId }: { WorkflowId: string }) {
                             secret: webhookSecret,
                           },
                           outPut: {},
+                          Form: [],
                         },
                         measured: {},
                         selected: false,

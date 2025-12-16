@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { PencilIcon, Plus } from "lucide-react";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -27,6 +27,7 @@ import MyActionSheet from "./MyActionSheet";
 import { Params } from "next/dist/server/request/params";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { Separator } from "./ui/separator";
 
 const AddNode = () => (
   <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
@@ -106,35 +107,43 @@ export default function workflowEditor({ workflowId }: { workflowId: string }) {
   }, []);
 
   return (
-    <div>
-      <div className="flex items-center gap-2">
-        <SidebarTrigger className="bg-teal-900" />
-        {isEditing ? (
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            className="border-b border-teal-600 bg-transparent text-xl font-semibold focus:outline-none px-2"
-          />
-        ) : (
-          <h1
-            className="text-xl font-semibold cursor-pointer hover:text-teal-500 transition"
-            onClick={() => setIsEditing(true)}
-          >
-            {title}
-          </h1>
-        )}
+    <div className="overflow-hidden ">
+      <div className="pb-2 mt-0 ] overflow-hidden">
+        <div className="flex items-center overflow-hidden gap-2">
+          <SidebarTrigger className="bg-[#1a2438] overflow-hidden" />
+          {isEditing ? (
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              autoFocus
+              className="border-b  overflow-hidden border-[#172433] bg-transparent text-xl font-semibold focus:outline-none px-2"
+            />
+          ) : (
+            <div
+              className="flex justify-items-center gap-2 overflow-hidden"
+              onClick={() => setIsEditing(true)}
+            >
+              <h1 className="text-xl font-semibold cursor-pointer overflow-hidden hover:text-[#cdc5b7] transition">
+                {title}
+              </h1>
+              <div className="flex justify-center border-2 items-center p-1 rounded-md ">
+                <PencilIcon size={18}></PencilIcon>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
+      <Separator className="overflow-hidden"></Separator>
       <div
-        className={` overflow-hidden text-foreground  flex items-center flex-col  ${open ? "w-[calc(100vw-272px)]" : "w-screen"}`}
+        className={` flex-1 overflow-hidden text-foreground  flex items-center flex-col  ${open ? "w-[calc(100vw-272px)]" : "w-screen"}`}
       >
-        <main>
-          <div className=" grid grid-cols-12 "></div>
+        <main className="flex-1">
+          <div className=" grid grid-cols-12 overflow-hidden "></div>
 
-          <div className="h-screen w-screen  ">
+          <div className="h-screen w-screen  overflow-hidden  ">
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -145,6 +154,7 @@ export default function workflowEditor({ workflowId }: { workflowId: string }) {
               zoomOnPinch={true}
               onConnect={onConnect}
               fitView
+           
             >
               <Background></Background>
             </ReactFlow>
@@ -155,7 +165,7 @@ export default function workflowEditor({ workflowId }: { workflowId: string }) {
               </div>
             )}
 
-            <div className="absolute top-1  bg-red-700 right-50 flex m-2 font-bold items-center "></div>
+            <div className="absolute overflow-hidden top-1  bg-red-700 right-50 flex m-2 font-bold items-center "></div>
             <Button
               onClick={handleSaveClick}
               variant={"secondary"}

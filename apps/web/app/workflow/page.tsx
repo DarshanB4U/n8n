@@ -1,5 +1,5 @@
 "use client";
-
+import React, { MouseEvent } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Pencil, Trash2, TableProperties } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  TableProperties,
+  CircleFadingPlus,
+} from "lucide-react";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { useCallback, useEffect, useState } from "react";
 import api from "@/lib/api";
@@ -46,7 +52,8 @@ export default function WorkflowPage() {
     fetchWorkflows();
   }, []);
 
-  async function handleClickDelete(id: string) {
+  async function handleClickDelete(id: string, event: React.MouseEvent) {
+    event.preventDefault();
     const res = await api.delete(`/workflow/${id}`);
     // console.log(res.data.workflow.title);
     toast.success(`Deleted ${res.data.workflow.title}`);
@@ -94,84 +101,81 @@ export default function WorkflowPage() {
 
   return (
     <div>
-      <SidebarTrigger className="bg-teal-900" />
+      <SidebarTrigger className="bg-[#213448]" />
+
+      {/* {create workflow } */}
+
       <div
         className={` text-foreground  flex items-center flex-col  ${open ? "w-[calc(100vw-272px)]" : "w-screen"}`}
       >
         {/* Page header */}
-        <header className="sticky top-0 z-10 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/50 border-b flex justify-start w-full ">
-          <div
-            className={`mx-auto max-w-6xl px-5 py-4  flex items-center justify-between`}
-          >
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                All Workflows
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Create, manage, and monitor your automation workflows.
-              </p>
-            </div>
-            <Button asChild onClick={handleCreateWorkflow}>
-              <div className=" flex  justify-items-center">
-                <Plus className="mr-2 h-4 w-4" />
-                New workflow
-              </div>
-            </Button>
-          </div>
-        </header>
 
         <main className="mx-auto w-full max-w-6xl px-5 py-6">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold">Your workflows</h2>
+            <div className="flex justify-between">
+              <h2 className="text-xl font-semibold">Your workflows</h2>
+              <div
+                onClick={handleCreateWorkflow}
+                className="bg-[#244eaa] w-12 h-12 ml-8  rounded-xl flex justify-center items-center hover:bg-blue-900"
+              >
+                <CircleFadingPlus size="35" />
+              </div>
+            </div>
+
             <Separator className="mt-2" />
           </div>
 
           {/* Grid of workflow cards */}
-          <div className="grid gap-4  sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4  sm:grid-cols-2 lg:grid-cols-3 ">
             {workflows.map((wf) => (
-              <Card
-                key={wf.id}
-                className="group border-border transition-all hover:shadow-md hover:border-primary/40"
-              >
-                <CardHeader className="space-y-1">
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="text-xl leading-tight">
-                      {wf.title}
-                    </CardTitle>
-                    {/* <StatusBadge status={wf.status} /> */}
-                  </div>
-                  {wf.description ? (
-                    <CardDescription>{wf.description}</CardDescription>
-                  ) : null}
-                </CardHeader>
+              <div className="p-1   border-1 rounded-2xl">
+                <Link href={`/workflow/${wf.id}`}>
+                  <Card
+                    key={wf.id}
+                    className="group rounded-lg bg-linear-to-t from-[#17181f] to-[#202329] border-border transition-all hover:shadow-md hover:border-primary/40"
+                  >
+                    <CardHeader className="space-y-1 flex justify-between">
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-xl leading-tight">
+                          {wf.title}
+                        </CardTitle>
+                        {/* <StatusBadge status={wf.status} /> */}
+                      </div>
+                      {wf.description ? (
+                        <CardDescription>{wf.description}</CardDescription>
+                      ) : null}
+                      <Button
+                        variant="outline"
+                        className="  hover:bg-neutral-700"
+                        onClick={(e) => handleClickDelete(wf.id, e)}
+                        size="sm"
+                      >
+                        <Trash2 className=" h-7 w-7 text-red-900  " />
+                      </Button>
+                    </CardHeader>
 
-                <CardFooter className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Button variant="secondary" size="sm" asChild>
-                      <Link href={`/workflow/${wf.id}`}>
-                        <Pencil className="mr-1.5 h-4 w-4" />
-                        Edit
-                      </Link>
-                    </Button>
-                    <Button
-                      onClick={() => handleClickDelete(wf.id)}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      <Trash2 className="mr-1.5 h-4 w-4" />
-                      Delete
-                    </Button>
-                    <Button
-                      onClick={() => handleExeClick(wf.id)}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <TableProperties className="mr-1.5 h-4 w-4" />
-                      Executions
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
+                    <CardFooter className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          className="bg-linear-to-t from-[#224ead] to-[#224ead]  "
+                          size="sm"
+                          asChild
+                        ></Button>
+
+                        <Button
+                          onClick={() => handleExeClick(wf.id)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <TableProperties className="mr-1.5 h-4 w-4" />
+                          Executions
+                        </Button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </Link>
+              </div>
             ))}
           </div>
         </main>
