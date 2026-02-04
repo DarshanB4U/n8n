@@ -77,6 +77,8 @@ app.use("/api/v0/credential", credentialRouter);
 app.use("/api/v0/workflow", authMiddleware, workflowRouter);
 app.use("/api/v0/execution", authMiddleware, executionRouter);
 app.use("/api/v0/form", formRouter);
+app.use("/api/v0/form", formRouter);
+
 
 app.listen(PORT, () => {
   console.log("app is listning on port :", PORT);

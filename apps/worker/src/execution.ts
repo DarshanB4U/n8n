@@ -10,6 +10,20 @@ interface edges {
 }
 type Wf = Array<INode>;
 
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  retries = 3,
+  delay = 1000,
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (retries <= 0) throw err;
+    await new Promise((res) => setTimeout(res, delay));
+    return withRetry(fn, retries - 1, delay * 2);
+  }
+}
+
 function getTriggerId(nodes: Wf) {
   for (let i = 0; i < nodes.length; i++) {
     if (
@@ -81,11 +95,10 @@ class Queue<T = any> {
 
 export const RunWorkflow = async (
   workflowId: string,
-  formExecutionID?: string
+  formExecutionID?: string,
 ) => {
   const q = new Queue();
 
-  //fetch workflow from db
   const workflow = await prisma.workflow.findFirst({
     where: {
       id: workflowId,
@@ -97,15 +110,11 @@ export const RunWorkflow = async (
   }
 
   const nodes = workflow.nodes as unknown as Wf;
-
   const nodesMap = new Map(nodes.map((n) => [n.id, n]));
-
   const edges = workflow?.edges as unknown as edges[];
 
-  // create adjcency list form workflow edges
   const adjcencyList = CreateAdjecencyList(edges);
   let executionForm;
-  //find the terigger node
 
   const Trigger = getTriggerId(nodes);
 
@@ -131,7 +140,6 @@ export const RunWorkflow = async (
       return;
     }
     const nodeid = q.pop();
-    // console.log(nodeid);
     const nodeSet = adjcencyList.get(nodeid);
     if (!nodeSet) {
       console.log("set is undefined");
@@ -149,33 +157,47 @@ export const RunWorkflow = async (
       try {
         if (node?.data.nodeRegid == 1) {
           const emailCred = await getCredById(
-            node.data.Credentials?.CredentialId as string
+            node.data.Credentials?.CredentialId as string,
           );
 
           console.log("email credentials logs ", emailCred);
-          await sendMail(
-            emailCred as string,
-            replaceTemplate(node.data.Parameters.from as string, formExecution),
-            replaceTemplate(node.data.Parameters.to as string, formExecution),
-            replaceTemplate(node.data.Parameters.body as string, formExecution),
-            replaceTemplate(
-              node.data.Parameters.subject as string,
-              formExecution
-            )
+
+          await withRetry(() =>
+            sendMail(
+              emailCred as string,
+              replaceTemplate(
+                node.data.Parameters.from as string,
+                formExecution,
+              ),
+              replaceTemplate(node.data.Parameters.to as string, formExecution),
+              replaceTemplate(
+                node.data.Parameters.body as string,
+                formExecution,
+              ),
+              replaceTemplate(
+                node.data.Parameters.subject as string,
+                formExecution,
+              ),
+            ),
           );
         }
         if (node?.data.nodeRegid == 2) {
           const TelegramToken = await getCredById(
-            node.data.Credentials.CredentialId as string
+            node.data.Credentials.CredentialId as string,
           );
 
-          await SendTG(
-            TelegramToken as string,
-            replaceTemplate(
-              node.data.Parameters.chat_id as string,
-              formExecution
+          await withRetry(() =>
+            SendTG(
+              TelegramToken as string,
+              replaceTemplate(
+                node.data.Parameters.chat_id as string,
+                formExecution,
+              ),
+              replaceTemplate(
+                node.data.Parameters.text as string,
+                formExecution,
+              ),
             ),
-            replaceTemplate(node.data.Parameters.text as string, formExecution)
           );
         }
 
@@ -184,8 +206,5 @@ export const RunWorkflow = async (
         console.log(error);
       }
     }
-  }
-
-  //add the child of the trigger node to q
-  // ass eexcte the nodes node if node has child then add it child to que
+  } 
 };

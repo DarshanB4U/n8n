@@ -16,6 +16,7 @@ export const getCredById = async (credId: string) => {
     });
 
     const credData = credentials?.credentialData as unknown as credData;
+    
     return credData[0]?.value;
   } catch (error) {}
   console.log("error finding credentials from db ", error);

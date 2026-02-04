@@ -33,7 +33,7 @@ workflowRouter.post("/", async (req, res) => {
     const workflowRes = await prisma.workflow.create({
       data: {
         userId: req.userID,
-        title: workflow.data.title ?? "untitled workflow ",
+        title: workflow.data.title ?? " workflow ",
         nodes: workflow.data.nodes,
         edges: workflow.data.edges,
       },
@@ -81,7 +81,7 @@ workflowRouter.put("/:id", async (req, res) => {
 
     const Trigger = data.nodes.filter(
       (node) =>
-        (node.type === TriggerNodetype.From) || TriggerNodetype.webhookTrigger
+        node.type === TriggerNodetype.From || TriggerNodetype.webhookTrigger,
     );
 
     console.log("----------->trigger", Trigger);
@@ -166,7 +166,7 @@ workflowRouter.put("/:id", async (req, res) => {
         });
         console.log(
           "Deleted webhook because trigger is not webhook:",
-          deletedWebhook
+          deletedWebhook,
         );
       }
     }
@@ -201,14 +201,28 @@ workflowRouter.get("/:id", async (req, res) => {
 });
 workflowRouter.delete("/:id", async (req, res) => {
   try {
-    const workflow = await prisma.workflow.delete({
+    const workflow = await prisma.workflow.findFirst({
       where: {
-        userId: req.userID,
         id: req.params.id,
+        userId: req.userID,
       },
     });
-    res.status(200).json({ msg: "workflow deleted ", workflow });
-  } catch (error) {}
+
+    if (!workflow) {
+      return res.status(404).json({ msg: "workflow not found" });
+    }
+
+    await prisma.$transaction([
+      prisma.form.deleteMany({ where: { workflowId: req.params.id } }),
+      prisma.webhook.deleteMany({ where: { workflowID: req.params.id } }),
+      prisma.workflow.delete({ where: { id: req.params.id } }),
+    ]);
+
+    res.status(200).json({ msg: "workflow deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "delete failed" });
+  }
 });
 
 workflowRouter.post("/run/:id", async (req, res) => {

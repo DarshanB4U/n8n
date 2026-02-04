@@ -72,7 +72,7 @@ model Webhook {
   // header     String
   secret     String
   workflowID String
-  workflow   Workflow @relation(fields: [workflowID], references: [id])
+  workflow   Workflow @relation(fields: [workflowID], references: [id], onDelete: Cascade)
 }
 
 model Credentials {
@@ -87,14 +87,16 @@ model Credentials {
 }
 
 model Execution {
-  id            String         @id @default(uuid())
-  status        WorkflowStatus @default(stopped)
-  nodeOutput    Json[]
-  WokflowID     String
-  Workflow      Workflow       @relation(fields: [WokflowID], references: [id])
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  nodeId        String
+  id         String         @id @default(uuid())
+  status     WorkflowStatus @default(stopped)
+  nodeOutput Json[]
+  WokflowID  String
+
+  Workflow Workflow @relation(fields: [WokflowID], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  nodeId    String
 
   @@index([WokflowID])
   @@index([status])
@@ -126,5 +128,6 @@ model Form {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   workflowId String   @unique
-  Workflow   Workflow @relation(fields: [workflowId], references: [id])
+
+  Workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 }

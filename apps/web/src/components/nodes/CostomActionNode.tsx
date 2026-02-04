@@ -108,7 +108,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
           };
         }
         return node;
-      })
+      }),
     );
   }
   // function handleInputChange(e:Event){
@@ -117,7 +117,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
   // }
   function handleParamInputChange(
     event: React.ChangeEvent<HTMLInputElement>,
-    paramName: string
+    paramName: string,
   ) {
     // Access the input's new value
     const { value } = event.target;
@@ -223,7 +223,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
             {node?.parameters?.map((parameter) => {
               return (
-                <div>
+                <div key={parameter.name}>
                   <div className="grid gap-3" key={parameter.name}>
                     <Label>{parameter.displayName}</Label>
                     <Input
@@ -254,7 +254,7 @@ export function CostomAction({ id, data }: { id: string; data: INodeData }) {
 
                       <SelectContent>
                         {formFields.map((ff) => (
-                          <SelectItem key={ff.title} value={ff.id}>
+                          <SelectItem key={ff.id} value={ff.id}>
                             {ff.title}
                           </SelectItem>
                         ))}

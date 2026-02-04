@@ -13,10 +13,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "6.15.0",
     "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/mustache": "^4.2.6",
     "@types/nodemailer": "^7.0.1",
+    "mustache": "^4.2.0",
     "nodemailer": "^7.0.6",
     "redis": "^5.8.2"
   }

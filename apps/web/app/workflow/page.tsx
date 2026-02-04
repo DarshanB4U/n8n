@@ -56,7 +56,12 @@ export default function WorkflowPage() {
     event.preventDefault();
     const res = await api.delete(`/workflow/${id}`);
     // console.log(res.data.workflow.title);
-    toast.success(`Deleted ${res.data.workflow.title}`);
+    toast.success(
+      res.data?.workflow?.title
+        ? `Deleted ${res.data.workflow.title}`
+        : "Workflow deleted",
+    );
+
     fetchWorkflows();
   }
   async function handleExeClick(id: string) {
@@ -66,7 +71,7 @@ export default function WorkflowPage() {
   async function handleCreateWorkflow() {
     setLoading(true);
     const Data = {
-      title: "utitledWorfkow",
+      title: "workflow",
       nodes: [],
       edges: [],
     };
@@ -103,13 +108,9 @@ export default function WorkflowPage() {
     <div>
       <SidebarTrigger className="bg-[#213448]" />
 
-      {/* {create workflow } */}
-
       <div
         className={` text-foreground  flex items-center flex-col  ${open ? "w-[calc(100vw-272px)]" : "w-screen"}`}
       >
-        {/* Page header */}
-
         <main className="mx-auto w-full max-w-6xl px-5 py-6">
           <div className="mb-4">
             <div className="flex justify-between">
@@ -125,10 +126,9 @@ export default function WorkflowPage() {
             <Separator className="mt-2" />
           </div>
 
-          {/* Grid of workflow cards */}
           <div className="grid gap-4  sm:grid-cols-2 lg:grid-cols-3 ">
             {workflows.map((wf) => (
-              <div className="p-1   border-1 rounded-2xl">
+              <div className="p-1   border-1 rounded-2xl" key={wf.id}>
                 <Link href={`/workflow/${wf.id}`}>
                   <Card
                     key={wf.id}
@@ -139,7 +139,6 @@ export default function WorkflowPage() {
                         <CardTitle className="text-xl leading-tight">
                           {wf.title}
                         </CardTitle>
-                        {/* <StatusBadge status={wf.status} /> */}
                       </div>
                       {wf.description ? (
                         <CardDescription>{wf.description}</CardDescription>
